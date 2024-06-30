@@ -4,7 +4,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'body': "url('./assets/img/bg.png')",
+      }
+    },
   },
   plugins: [],
+  importanct:true
 }
