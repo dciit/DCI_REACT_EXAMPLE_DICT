@@ -10,3 +10,14 @@
 * {
     font-family: 'Inter', sans-serif;
 }
+
+#upload-result input::-webkit-outer-spin-button,
+#upload-result input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+#upload-result input[type=number] {
+    -moz-appearance: textfield;
+}

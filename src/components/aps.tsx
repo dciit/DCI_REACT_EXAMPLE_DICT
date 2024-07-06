@@ -18,7 +18,7 @@ export interface PlanProps {
     date?: string;
     model?: string;
 }
-function Aps() {
+function ApsTest() {
     let baseBgColor = 'bg-[#48a6a6]';
     let baseTextColor = 'text-[#5f5f5f]';
     let TextColor = 'text-[#48a6a6]';
@@ -216,4 +216,4 @@ function Aps() {
     )
 }
 
-export default Aps
+export default ApsTest
