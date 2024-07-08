@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apsapi } from '../constants';
-import { ViApsPartMasterProps, ApsMainProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSInsertPlanProps, Mdw27Props, WipProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine } from '../interface/aps.interface';
+import { ViApsPartMasterProps, ApsMainProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSInsertPlanProps, Mdw27Props, WipProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, ParamInsertPlan } from '../interface/aps.interface';
 const http = axios.create({
     baseURL: apsapi,
     headers: {
@@ -151,6 +151,36 @@ export function ApiApsGetPlanMachine(param: ParamGetPlanMachine) {
             resolve(res.data)
         ]).catch((e) => {
             console.log(e);
+        })
+    })
+}
+
+export function ApiUpdateSequencePlan(param: ParamUpdateSequencePlan) {
+    return new Promise<StatusProps>(resolve => {
+        http.post(`/Aps/UpdateSequencePlan`, param).then((res) => {
+            resolve(res.data);
+        }).catch((e) => {
+            console.log(e)
+        })
+    })
+}
+
+export function ApiGetPartMaster() {
+    return new Promise<PropsPartMaster[]>(resolve => {
+        http.get(`/Aps/GetPartMaster`).then((res) => {
+            resolve(res.data);
+        }).catch((e) => {
+            console.log(e)
+        })
+    })
+}
+
+export function ApiInsertPlan(param: ParamInsertPlan) {
+    return new Promise<StatusProps>(resolve => {
+        http.post(`/Aps/InsertPlan`, param).then((res) => {
+            resolve(res.data);
+        }).catch((e) => {
+            console.log(e)
         })
     })
 }

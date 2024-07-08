@@ -1,13 +1,13 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { API_APS_RESULT, API_APS_UPDATE_RESULT } from '../service/aps.service';
+import { API_APS_RESULT, API_APS_UPDATE_RESULT, ApiGetPartMaster } from '../service/aps.service';
 import moment from 'moment';
 import { Paper, TableContainer } from '@mui/material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { APSResultPartProps, DictMstr, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps } from '../interface/aps.interface';
+import { APSResultPartProps, DictMstr, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps, PropsPartMaster } from '../interface/aps.interface';
 import { lines } from '../constants';
 
-function ApsUploadResult() {
+function ApsBackflush() {
     const createBy: string = '41256 PEERAPONG.k';
     const dtNow: any = moment();
     const [ymd, setYmd] = useState<string>(dtNow.format('YYYYMMDD'))
@@ -24,11 +24,11 @@ function ApsUploadResult() {
         init();
     }, [])
     const init = async () => {
+    
         let ApiApsResult = await API_APS_RESULT({
             wc: lineSelected.value,
             ym: dtNow.format('YYYYMM')
         });
-        console.log(ApiApsResult.parts)
         setPartGroupMaster(ApiApsResult.partGroupMaster);
         setParts(ApiApsResult.parts);
         setStock(ApiApsResult.data);
@@ -181,4 +181,4 @@ function ApsUploadResult() {
     )
 }
 
-export default ApsUploadResult
+export default ApsBackflush

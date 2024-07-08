@@ -401,9 +401,10 @@ export interface EmpProps {
 
 export interface ParamGetPlanMachine {
     ymd: string;
+    partGroup?: string;
 }
 export interface PropsPlanMachine {
-    prdPlanCode:string;
+    prdPlanCode: string;
     wcno: string;
     apsSeq: number;
     apsPlanDate: string;
@@ -414,6 +415,41 @@ export interface PropsPlanMachine {
     prdPlanQty: number;
     lrev: number;
     partGroup: string;
-    stockMain:number;
-    stockMachine?:number;
+    stockMain: number;
+    stockMachine?: number;
+    reason?: string;
+
+}
+export interface ParamUpdateSequencePlan {
+    empcode: string;
+    partGroup: string | undefined;
+    plan: PropsPlanMachine[];
+}
+
+export interface PropsPartMaster {
+    wcno: string;
+    model_common: string;
+    partno: string;
+    cm: string;
+    part_group: string;
+    part_group_name: string;
+    stdMC: number;
+    stdCTMC: number;
+    stdCT: number;
+    stdCapHR: number;
+    stdCapShift: number;
+    stdCapDay: number;
+    stdNeedDay: number;
+}
+
+export interface ParamInsertPlan {
+    model: string;
+    prdQty: number;
+    planDate: string;
+    partGroup: string;
+    empcode: string;
+    partNo: string;
+    wcno: string;
+    prdSeq: number;
+    partGroupName: string;
 }
