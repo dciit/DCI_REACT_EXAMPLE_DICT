@@ -19,42 +19,42 @@ export interface ViApsPartMasterProps {
 //     actual: number;
 // }
 
-export interface ApsMainProps {
-    sequence: ApsMainSequenceProps[];
-    interactive: ApsMainInterActiveProps[];
-}
-export interface ApsMainInterActiveProps {
-    hour: number;
-    modelCode: string;
-    modelName: string;
-    cnt: number;
-}
-export interface ApsMainSequenceProps {
-    p_wcno: string;
-    p_group: string;
-    p_model: string;
-    p_startdate: string;
-    p_starttime: string;
-    p_enddate: string;
-    p_endtime: string;
-    p_modelcode: string;
-    p_palnqty: number;
-    _P_packing: any[];
-    p_StartDateT: Date;
-    plqty: number;
-    row: number;
-    p_comment: string;
-    p_packing: string;
-    p_palletqty: number;
-    plancode: string;
-    seq: string;
-    p_mc: string;
-    p_rev: string;
-    p_plancode: string;
-    p_planqty: number;
-    subline: string;
-    packingList: PackingList[];
-}
+// export interface ApsMainProps {
+//     sequence: ApsMainSequenceProps[];
+//     interactive: ApsMainInterActiveProps[];
+// }
+// export interface ApsMainInterActiveProps {
+//     hour: number;
+//     modelCode: string;
+//     modelName: string;
+//     cnt: number;
+// }
+// export interface ApsMainSequenceProps {
+//     p_wcno: string;
+//     p_group: string;
+//     p_model: string;
+//     p_startdate: string;
+//     p_starttime: string;
+//     p_enddate: string;
+//     p_endtime: string;
+//     p_modelcode: string;
+//     p_palnqty: number;
+//     _P_packing: any[];
+//     p_StartDateT: Date;
+//     plqty: number;
+//     row: number;
+//     p_comment: string;
+//     p_packing: string;
+//     p_palletqty: number;
+//     plancode: string;
+//     seq: string;
+//     p_mc: string;
+//     p_rev: string;
+//     p_plancode: string;
+//     p_planqty: number;
+//     subline: string;
+//     packingList: PackingList[];
+// }
 
 export interface PackingList {
     p_MODEL: string;
@@ -94,11 +94,12 @@ export interface GasTightProps {
 
 export interface PropsDialogNotice {
     open: boolean;
+    planSelected: PropsMain | null;
     setOpen: any;
-    data: ApsProductionPlanProps | null;
+    data: PropsMain | null;
     setData: any;
-    plan: ApsProductionPlanProps[];
-    setPlan: any;
+    // plan: ApsProductionPlanProps[];
+    // setPlan: any;
     apsLoad: any;
 }
 
@@ -162,6 +163,7 @@ export interface partWipProps {
 export interface Mdw27Props {
     modelName: string;
     modelCode: string;
+    wcno?: string;
 }
 export interface StatusProps {
     status: boolean | number;
@@ -260,10 +262,10 @@ export interface GasTightProps {
 export interface PropsDialogNotice {
     open: boolean;
     setOpen: any;
-    data: ApsProductionPlanProps | null;
+    data: PropsMain | null;
     setData: any;
-    plan: ApsProductionPlanProps[];
-    setPlan: any;
+    // plan: ApsProductionPlanProps[];
+    // setPlan: any;
     apsLoad: any;
 }
 
@@ -340,6 +342,7 @@ export interface APSResultPartProps {
     stdCapShift: number;
     stdCapDay: number;
     stdNeedDay: number;
+    modelcode: string;
 }
 export interface EkbWipPartStockTransactionProps {
     nbr: string;
@@ -355,10 +358,12 @@ export interface EkbWipPartStockTransactionProps {
     createBy: string;
     createDate: Date;
     refNo: string;
+    modelcode: string;
 }
 export interface ApsResult {
     wc: string;
     ym: string;
+    ymd: string;
 }
 
 
@@ -416,9 +421,9 @@ export interface PropsPlanMachine {
     lrev: number;
     partGroup: string;
     stockMain: number;
-    stockMachine?: number;
+    stockMachine: number;
     reason?: string;
-
+    result: number;
 }
 export interface ParamUpdateSequencePlan {
     empcode: string;
@@ -442,14 +447,232 @@ export interface PropsPartMaster {
     stdNeedDay: number;
 }
 
-export interface ParamInsertPlan {
-    model: string;
-    prdQty: number;
-    planDate: string;
-    partGroup: string;
-    empcode: string;
-    partNo: string;
+
+export interface ParamApsGetProductionPlan {
+    ymd: string;
+    subLine?: string;
+}
+
+export interface PropsApsGetProductionPlan {
     wcno: string;
+    prdPlanCode: string;
+    partNo: string;
+    cm: string;
+    apsSeq: string;
+    subLine: string;
+    prdSeq: string;
+    result: number;
+    estSet: number;
+    safety: number;
+    apsPlanQty: number;
+    prdPlanQty: number;
+
+    statorMain: number;
+    statorMotor: number;
+    rotorMain: number;
+    rotorMotor: number;
+    housingMain: number;
+    housingMC: number;
+}
+
+export interface PropsPrivilege {
+    wcno: string;
+}
+export interface PropsInsertPlan {
+    date: string;
+    model: string;
+    qty: number;
+    empcode: string;
+    wcno: string | undefined;
+    seq: number;
+    type: string; // MAIN OR SUBLINE
+    partGroup?: string;
+}
+export interface ParamMachineChangeSeq {
+    prdPlanCode: string | undefined;
     prdSeq: number;
-    partGroupName: string;
+}
+export interface PropsPart {
+    modelName: string;
+    modelCode: string;
+}
+export interface ParamGetPart {
+    type: string;
+    group: string;
+}
+export interface ParamGetMainPlan {
+    paramDate: string;
+    paramWCNO: string;
+}
+
+export interface PropsMain {
+    prdPlanCode: string;
+    wcno: string;
+    subLine: string;
+    apsSeq: number;
+    apsPlanDate: string;
+    prdSeq: number;
+    modelCode: string;
+    partNo: string;
+    cm: string;
+    apsPlanQty: number;
+    prdPlanQty: number;
+    dataWIP: DataWIP;
+    statusPlan: string;
+}
+
+export interface DataWIP {
+    wcno: string;
+    modelCode: string;
+    modelName: string;
+    estimateMainSet: number;
+    estimateAllSet: string;
+    dataDateTime: Date;
+    statorMain: string;
+    statorSubLine: null | string;
+    statorSafety: boolean;
+    statorNotice: any[];
+    rotorMain: string;
+    rotorSubLine: string;
+    rotorSafety: boolean;
+    rotorNotice: any[];
+    fsMain: string;
+    fsSubLine: string;
+    fsSafety: boolean;
+    fsNotice: any[];
+    hsMain: string;
+    hsSubLine: string;
+    hsSafety: boolean;
+    hsNotice: any[];
+    csMain: string;
+    csSubLine: string;
+    csSafety: boolean;
+    csNotice: any[];
+    lwMain: string;
+    lwSubLine: string;
+    lwSafety: boolean;
+    lwNotice: any[];
+    cbMain: null;
+    cbSubLine: null;
+    cbSafety: boolean;
+    cbNotice: null;
+    bodyMain: string;
+    bodySubLine: string;
+    bodySafety: boolean;
+    bodyNotice: any[];
+    topMain: string;
+    topSubLine: string;
+    topSafety: boolean;
+    topNotice: any[];
+    bottomMain: string;
+    bottomSubLine: string;
+    bottomSafety: boolean;
+    bottomNotice: any[];
+}
+
+export interface ParamInsertPlan {
+    type: string; // MAIN OR SUBLINE
+    group: string; // OS/FS LW HS or Other
+    seq: number; // SUBLINE ONLY LAST SEQ 
+}
+export interface ParamGetNotify {
+    wcno: string;
+    date: string;
+}
+
+export interface ParamGetMainPlanTest {
+    ymd: string;
+    modelName?: string;
+}
+
+
+export interface PropsSublineStock {
+    stockHistory: StockHistory[];
+    stockCurrent: StockCurrent[];
+}
+
+export interface StockCurrent {
+    ym: string;
+    pwcno: string;
+    modelCode: string;
+    modelName: string;
+    fsSubline: number;
+    fsMain: number;
+    hsSubline: number;
+    hsMain: number;
+    lwSubline: number;
+    lwMain: number;
+    csSubline: number;
+    csMain: number;
+    bodySubline: number;
+    bodyMain: number;
+    bottomSubline: number;
+    bottomMain: number;
+    topSubline: number;
+    topMain: number;
+    statorSubline: number | null;
+    statorMain: number;
+    rotorSubline: number;
+    rotorMain: number;
+}
+
+export interface StockHistory {
+    ym: string;
+    ymd: string;
+    wcno: string;
+    hhmm: string;
+    modelcode: string;
+    modelname: string;
+    apsPlan: number;
+    apsResult: number;
+    apsRemainPlan: number;
+    fsMain: number;
+    fsSubline: number;
+    hsMain: number;
+    hsSubline: number;
+    lwMain: number;
+    lwSubline: number;
+    csMain: number;
+    csSubline: number;
+    bodyMain: number;
+    bodySubline: number;
+    bottomMain: number;
+    bottomSubline: number;
+    topMain: number;
+    topSubline: number;
+    statorMain: number;
+    statorSubline: number;
+    rotorMain: number;
+    rotorSubline: number;
+    createDate: Date;
+}
+
+export interface PropsMpckLayout {
+    layoutCode: string;
+    layoutName: string;
+    layoutSubName: null;
+    factory: string;
+    line: null;
+    subLine: null;
+    width: number;
+    height: number;
+    layoutStatus: null;
+    bypassMq: boolean;
+    bypassSa: boolean;
+    updateBy: null;
+    updateDate: null;
+    boardId: string;
+}
+
+export interface PropsInOut {
+    drawing: string;
+    lbal: number;
+    in: number;
+    out: number;
+    group: string;
+}
+export interface ParamInOut {
+    group: string;
+    ymd: string;
+    drawing?: string;
 }

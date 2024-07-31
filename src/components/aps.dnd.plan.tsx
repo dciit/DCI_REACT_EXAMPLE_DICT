@@ -14,7 +14,7 @@ export interface ApsDNDProps {
 }
 const ApsDND = (props: ApsDNDProps) => {
     let dtNow: any = moment();
-    const { plan, close, setPlan, planEdit, setPlanEdit } = props;
+    const { plan, setPlan, setPlanEdit } = props;
     const [items, setItems] = useState<ApsProductionPlanProps[]>(plan.filter((o: ApsProductionPlanProps) => moment(o.apsPlanDate).format(dateFormat) == dtNow.format(dateFormat)));
     const handleOnDragEnd = (result: DropResult) => {
         if (!result.destination) return;
@@ -33,7 +33,6 @@ const ApsDND = (props: ApsDNDProps) => {
     useEffect(() => {
         setDND();
     }, [plan])
-
     const setDND = () => {
         const newItems = Array.from(plan);
         setItems(newItems.map((item, index) => ({ ...item, prdSeq: (moment(item.apsPlanDate).format(dateFormat) == dtNow.format(dateFormat) ? index + 1 : item.prdSeq)?.toString() })));
@@ -65,33 +64,35 @@ const ApsDND = (props: ApsDNDProps) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {items.filter((o: ApsProductionPlanProps) => moment(o.apsPlanDate).format(dateFormat) == dtNow.format(dateFormat)).map((item: ApsProductionPlanProps, index) => (
-                                <Draggable key={item.prdSeq} draggableId={typeof item.prdSeq != 'undefined' ? item.prdSeq.toString() : ''} index={index}>
-                                    {(provided) => (
-                                        <tr
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                        >
-                                            <td className='py-2 border border-[#5c5fc880] text-center font-semibold'>{item.prdSeq}</td>
-                                            <td className='border border-[#5c5fc880] text-center text-[#5c5fc8] font-bold'>{item.partNo}</td>
-                                            <td className='border border-[#5c5fc880] text-center font-semibold'>{item.apsPlanQty}</td>
-                                            <td className='border border-[#5c5fc880] text-[#5c5fc8] '>
-                                                <div className='flex items-center justify-center'>
-                                                    <div className='border-dashed border-2 rounded-lg w-fit px-[8px] border-[#4caf50] text-[#3f9642] font-bold bg-green-50'>
-                                                        {item.prdPlanQty}
+                            {
+                                items.filter((o: ApsProductionPlanProps) => moment(o.apsPlanDate).format(dateFormat) == dtNow.format(dateFormat)).map((item: ApsProductionPlanProps, index) => {
+                                    return <Draggable key={`${item.prdPlanCode}-${item.prdSeq}`} draggableId={`${item.prdPlanCode}-${item.prdSeq}`} index={index}>
+                                        {(provided) => (
+                                            <tr
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                            >
+                                                <td className='py-2 border border-[#5c5fc880] text-center font-semibold'>{item.prdSeq}</td>
+                                                <td className='border border-[#5c5fc880] text-center text-[#5c5fc8] font-bold'>{item.partNo}</td>
+                                                <td className='border border-[#5c5fc880] text-center font-semibold'>{item.apsPlanQty}</td>
+                                                <td className='border border-[#5c5fc880] text-[#5c5fc8] '>
+                                                    <div className='flex items-center justify-center'>
+                                                        <div className='border-dashed border-2 rounded-lg w-fit px-[8px] border-[#4caf50] text-[#3f9642] font-bold bg-green-50'>
+                                                            {item.prdPlanQty}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className='border border-[#5c5fc880] text-center text-[#5c5fc8] '  >
-                                                <div className='flex items-center justify-center'>
-                                                    <div className='border opacity-80 hover:opacity-100 transition-all duration-100 border-[#5c5fc8] bg-[#5c5fc8] text-white rounded-xl px-3 w-fit shadow-lg' onClick={() => setPlanEdit(item)}>แก้ไขข้อมูล</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </Draggable>
-                            ))}
+                                                </td>
+                                                <td className='border border-[#5c5fc880] text-center text-[#5c5fc8] '  >
+                                                    <div className='flex items-center justify-center'>
+                                                        <div className='border opacity-80 hover:opacity-100 transition-all duration-100 border-[#5c5fc8] bg-[#5c5fc8] text-white rounded-xl px-3 w-fit shadow-lg' onClick={() => setPlanEdit(item)}>แก้ไขข้อมูล</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </Draggable>
+                                })
+                            }
                             {provided.placeholder}
                         </tbody>
                     </table>

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { PropsPlanMachine } from '../interface/aps.interface';
@@ -8,7 +7,7 @@ export interface ApsPlanMachineDNDParam {
 }
 const ApsPlanMachineDND = (props: ApsPlanMachineDNDParam) => {
     const { partGroup } = props;
-    const [plan, setPlan] = useState<PropsPlanMachine[]>([]);
+    const [plan ] = useState<PropsPlanMachine[]>([]);
     const handleOnDragEnd = (result: DropResult) => {
         if (!result.destination) return;
         // const newItems = Array.from(plan);

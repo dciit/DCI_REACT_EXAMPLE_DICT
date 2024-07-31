@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { apsapi } from '../constants';
+import { checkinapi } from '../constants';
 import { ParamGetObjectByLayout, PropsMpckObject } from '../interface/mp.interface';
 const http = axios.create({
-    baseURL: apsapi,
+    baseURL: checkinapi,
     headers: {
         'Content-Type': 'application/json;charset=UTF-8;json/html; charset=UTF-8',
     }
