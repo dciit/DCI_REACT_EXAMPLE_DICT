@@ -7,6 +7,7 @@ import { ChangeEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { ApiApsLogin } from '../service/aps.service';
+import { Button, Flex, Input } from 'antd';
 export interface ParamDialogLogin {
     open: boolean;
     setOpen: Function;
@@ -90,10 +91,10 @@ function DialogLogin(props: ParamDialogLogin) {
                     </div>
                     <div className='flex flex-col mt-6 gap-1'>
                         <span>รหัสพนักงาน</span>
-                        <input type="text" autoFocus={true} className=' rounded-t border-b border-b-[#747474] px-3 py-2 bg-gray-100' placeholder='กรอกชื่อผู้ใช้' onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        <Input type='text' size='large' autoFocus={true} placeholder='กรอกชื่อผู้ใช้' onChange={(e: ChangeEvent<HTMLInputElement>) => {
                             setUsername(e.target.value);
                             setWarning(false);
-                        }}  onKeyDown={handleKeyDown}/>
+                        }} onKeyDown={handleKeyDown} />
                     </div>
                     {/* <div className='flex flex-col mt-3 gap-1'>
                         <span>รหัสผ่าน</span>
@@ -108,10 +109,10 @@ function DialogLogin(props: ParamDialogLogin) {
                     {
                         !loginFailed && <div className='mt-1'><small className='text-red-500'>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง </small></div>
                     }
-                    <div className='mt-6 flex gap-2'>
-                        <button className='bg-blue-500 rounded-sm px-3 py-2 text-white shadow-md' onClick={handleLogin}>เข้าสู่ระบบ</button>
-                        <button className='border-blue-500 px-3 py-2 text-blue-500  border  opacity-75' onClick={() => setOpen(false)}>ปิดหน้าต่าง</button>
-                    </div>
+                    <Flex gap={6}>
+                        <Button type='primary' onClick={handleLogin}>เข้าสู่ระบบ</Button>
+                        <Button onClick={() => setOpen(false)}>ปิดหน้าต่าง</Button>
+                    </Flex>
                 </div>
             </DialogContent>
             <DialogActions>

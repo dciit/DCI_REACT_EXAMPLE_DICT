@@ -1,27 +1,29 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { intervalTime, lines } from '../constants'
 import moment from 'moment';
 import { ApsNotify, DictMstr, LineProps, ParamInsertPlan, PropsMain, PropsPartMaster, PropsPlanMachine } from '../interface/aps.interface';
-import { ApiGetPartGroupMaster, API_APS_PRODUCTION_PLAN, ApiApsGetPlanMachine, ApiGetNotify, ApiGetPartMaster, ApiMachineChangeSeq } from '../service/aps.service';
+import { ApiGetPartGroupMaster, ApiApsGetPlanMachine, ApiGetNotify, ApiGetPartMaster, ApiMachineChangeSeq, ApiGetMainPlan } from '../service/aps.service';
 // import DialogEditSeq from '../components/aps.dialog.edit.seq';
 import { CircularProgress, IconButton } from '@mui/material';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
-import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
+// import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
+// import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import { ToastContainer, toast } from 'react-toastify';
 import DialogEditMainPlan from '../components/aps.dialog.edit.main.plan';
-import ButtonMtr from '../components/button.mtr';
+// import ButtonMtr from '../components/button.mtr';
 import DialogInsertPlan from '../components/aps.dialog.insert.plan';
 import AddIcon from '@mui/icons-material/Add';
 import DialogMachineConfChangeSeq from '../components/machine/machine.conf.change.seq';
 import DialogEditPlanMachine from '../components/machine/machine.edit';
 import RemoveCircleOutlinedIcon from '@mui/icons-material/RemoveCircleOutlined';
 import ListPlanStatus from '../components/list.status';
+import ReportIcon from '@mui/icons-material/Report';
+import { Button } from 'antd';
 function ApsSubLine() {
     let dateLoop: string = '';
-    const [ymd, setYmd] = useState<any>(moment());
+    const [ymd, _] = useState<any>(moment());
     // const [modelUse] = useState<string>('');
     const [apsProductionPlan, setApsProductionPlan] = useState<PropsMain[]>([]);
     const [partGroup, setPartGroup] = useState<DictMstr[]>([]);
@@ -53,42 +55,29 @@ function ApsSubLine() {
 
     useEffect(() => {
         const intervalCall = setInterval(() => {
-            getData();
+            dateLoop = '';
+            init();
         }, intervalTime);
         return () => {
             clearInterval(intervalCall);
         }
     }, [])
-
-    const getData = async () => {
-        let partMaster: PropsPartMaster[] = await ApiGetPartMaster();
-        setPartMasters(partMaster);
-        const ResGetPartGroupMaster = await ApiGetPartGroupMaster();
-        setPartGroup(ResGetPartGroupMaster);
-        const ApiGetApsPlan = await API_APS_PRODUCTION_PLAN(ymd.format('YYYYMMDD'));
-        setApsProductionPlan(ApiGetApsPlan);
-        const ApiGetApsPlanMachine = await ApiApsGetPlanMachine({ ymd: ymd.format('YYYYMMDD') });
-        setPlanMachines(ApiGetApsPlanMachine);
-        const ResGetNotify = await ApiGetNotify({
-            wcno: '904', date: ymd.format('YYYYMMDD')
-        });
-        setNotifys(ResGetNotify);
-    }
-    // const [openDialogACK,setOpenDialogACK] = useState<<
-    // useEffect(() => {
-    //     init();
-    // }, [])
     const init = async () => {
         setPartGroup([]);
-        setLoad(true);
         let partMaster: PropsPartMaster[] = await ApiGetPartMaster();
         setPartMasters(partMaster);
         const ResGetPartGroupMaster = await ApiGetPartGroupMaster();
         setPartGroup(ResGetPartGroupMaster);
-        const ApiGetApsPlan = await API_APS_PRODUCTION_PLAN(ymd.format('YYYYMMDD'));
-        setApsProductionPlan(ApiGetApsPlan);
+        // const ApiGetApsPlan = await API_APS_PRODUCTION_PLAN(ymd.format('YYYYMMDD'));
+        // console.table(ApiGetApsPlan)
+        // setApsProductionPlan(ApiGetApsPlan);
+        const res = await ApiGetMainPlan({
+            paramDate: ymd.format('YYYYMMDD'),
+            paramWCNO: '904'
+        });
+        // console.table(res)
+        setApsProductionPlan(res.main);
         const ApiGetApsPlanMachine = await ApiApsGetPlanMachine({ ymd: ymd.format('YYYYMMDD') });
-        console.log(ApiGetApsPlanMachine)
         setPlanMachines(ApiGetApsPlanMachine);
         const ResGetNotify = await ApiGetNotify({
             wcno: '904', date: ymd.format('YYYYMMDD')
@@ -124,32 +113,6 @@ function ApsSubLine() {
         }
     }, [planSelected])
 
-    // useEffect(() => {
-    //     if (openDialogConfSeq) {
-
-    //     } else {
-    //         setApsProductionPlan([...apsProductionPlan])
-    //     }
-    // }, [openDialogConfSeq])
-
-    // useEffect(() => {
-    //     if (!openDialogConfSeq) {
-    //         setApsProductionPlan([...apsProductionPlan]);
-    //     }
-    // }, [openDialogConfSeq])
-    // const handleOnDragEnd = (result: DropResult) => {
-    //     if (!result.destination) return;
-    //     const newItems = Array.from(apsProductionPlan);
-    //     const [reorderedItem] = newItems.splice(result.source.index, 1);
-    //     newItems.splice(result.destination.index, 0, reorderedItem);
-    //     // setPlanChanged();
-    //     console.log(newItems.map((item, index) => ({ ...item, prdSeq: (moment(item.apsPlanDate).format(dateFormat) == ymd.format(dateFormat) ? index + 1 : item.prdSeq)?.toString() })))
-    //     setOpenDialogConfSeq(true);
-    // };
-    // const handleChangeSeq = async () => {
-    //     setApsProductionPlan([...PlanChanged]);
-    // }
-
     useEffect(() => {
         if (PrevPlanChange != null && ToPlanChange != null) {
             setOpenDialogMachineChangeSeq(true);
@@ -181,7 +144,6 @@ function ApsSubLine() {
             setPrevPlanChange(null);
             setToPlanChange(null);
         } else {
-            console.log(PrevPlanChange)
             if (PrevPlanChange != null && PrevPlanChange?.prdPlanCode != item.prdPlanCode) {
                 if (PrevPlanChange?.partGroup != item?.partGroup) {
                     toast.error('ไม่สามารถเปลี่ยนลำดับแผนข้ามกลุ่มได้')
@@ -230,17 +192,31 @@ function ApsSubLine() {
             setTypeInsert('');
         }
     }, [openDialogInsertPlan])
-
+    const DrawItemMain = ({ qty, status }: any) => {
+        if (qty == 0) {
+            return <div className='px-3 bg-red-600 text-white rounded-full w-fit '>ยกเลิก</div>
+        } else {
+            if (status == 'CURRENT') {
+                return <div className='px-3 bg-[#FFA500] text-black font-semibold rounded-full w-fit shadow-lg'>กำลังผลิต</div>
+            } else if (status == 'SOME') {
+                return <div className='px-3 bg-blue-600 text-white rounded-full w-fit '>ผลิตบางส่วน</div>
+            } else if (status == 'SUCCESS') {
+                return <div className='px-3 bg-green-700 text-white rounded-full w-fit '>ผลิตแล้ว</div>
+            } else {
+                return ''
+            }
+        }
+    }
     return (
         <div className='grid grid-cols-1 gap-6 p-3'>
             <div className='grid sm:grid-cols-6 md:grid-cols-6 xl:grid-cols-6 gap-6'>
-                <div className='sm:col-span-6 '>
+                {/* <div className='sm:col-span-6 '>
                     <div className='flex  gap-2 bg-white rounded-lg border px-3 pt-[6px] pb-[6px] shadow-sm  items-center justify-center w-fit'>
                         <div className='cursor-pointer select-none  rounded-full transition-all duration-300' onClick={() => setYmd(moment(ymd.format('YYYYMMDD')).subtract(1, 'days'))}><KeyboardArrowLeftOutlinedIcon /></div>
                         <div className='select-none font-semibold'>{ymd.format('DD/MM/YYYY').toUpperCase()}</div>
                         <div className='cursor-pointer select-none  rounded-full transition-all duration-300' onClick={() => setYmd(moment(ymd.format('YYYYMMDD')).add(1, 'days'))}><KeyboardArrowRightOutlinedIcon /></div>
                     </div>
-                </div>
+                </div> */}
                 <div className='sm:col-span-6 md:col-span-6 xl:col-span-2 border rounded-md bg-white  flex flex-col gap-2 w-full '>
                     <div className='bg-[#f9fafb]   border-b rounded-t-md h-[50px] flex item pl-4 items-center gap-1 pr-4'>
                         <div className='grow flex items-center gap-2'>
@@ -284,7 +260,6 @@ function ApsSubLine() {
                                             }
                                             let dtNow = moment().format('DD/MM/YYYY');
                                             let event = dateLoop == dtNow ? true : false;
-                                            // let prdQty: number = (o.prdPlanQty != undefined) ? o.prdPlanQty : 0;
                                             let noPlan: boolean = o.prdPlanQty == 0 ? true : false;
                                             if (LoopDate == '' || LoopDate != moment(o.apsPlanDate).format('DD/MM/YYYY')) {
                                                 LoopDate = moment(o.apsPlanDate).format('DD/MM/YYYY');
@@ -293,16 +268,22 @@ function ApsSubLine() {
                                                 DrawDate = false;
                                             }
                                             let isDate: boolean = moment(o.apsPlanDate).format('DD/MM/YYYY') == moment().format('DD/MM/YYYY') ? true : false;
-                                            let planStatus: string = o.statusPlan;
-                                            planStatus = planStatus == '' ? 'wait' : planStatus;
-                                            return <>
+                                            let apsCurrent: string = o.apsCurrent;
+                                            return <Fragment key={i}>
                                                 {
                                                     DrawDate == true && <tr key={i} className={`cursor-pointer select-none ${noPlan && 'opacity-50'}`} >
-                                                        <td colSpan={6} className='border py-2 pl-3'><strong>{LoopDate}</strong></td>
+                                                        <td colSpan={6} className='border py-2 pl-3'>
+                                                            <div className='flex w-[100%] items-center gap-2'>
+                                                                <strong>{LoopDate}</strong>
+                                                                {
+                                                                    !load && <Button disabled = {true} title='ปิดการใช้งานชั่วคราว' type='primary' icon = {<AddIcon sx={{ width: '20px' }}/>}>เพิ่มแผนผลิต</Button>
+                                                                }
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                 }
-                                                <tr key={i} className={`${isDate == true ? (planStatus == 'wait' ? 'cursor-pointer' : (planStatus == 'process' ? 'bg-[#FFA500]/10' : '')) : 'cursor-not-allowed opacity-40'} select-none ${noPlan && 'opacity-50'}`} >
-                                                    <td className={`border text-center ${planStatus == 'wait' ? 'bg-[#F9FAFB]' : (planStatus == 'process' ? 'bg-[#FFA500] text-black font-semibold' : '')} font-semibold`} >
+                                                <tr className={`${isDate == true ? (apsCurrent == '' ? 'cursor-pointer' : (apsCurrent == 'CURRENT' ? 'bg-[#FFA500]/10' : (apsCurrent == 'SOME' ? 'bg-blue-50' : (apsCurrent == 'SUCCESS' ? 'bg-green-50' : 'bg-white')))) : 'cursor-not-allowed opacity-40'} select-none ${noPlan && 'opacity-50'}`} >
+                                                    <td className={`border text-center ${apsCurrent == '' ? 'bg-[#F9FAFB]' : (apsCurrent == 'CURRENT' ? 'bg-[#FFA500] text-black font-semibold' : (apsCurrent == 'SOME' ? 'bg-blue-700 text-white' : (apsCurrent == 'SUCCESS' ? 'bg-green-700 text-white' : 'bg-white')))} font-semibold`} >
                                                         {
                                                             isDate == true ? o.prdSeq : <RemoveCircleOutlinedIcon className='text-[#ddd]' />
                                                         }
@@ -312,9 +293,7 @@ function ApsSubLine() {
                                                             <p className='font-bold'>{o.partNo}</p>
                                                             <div className='flex items-center gap-1'>
                                                                 <strong>({o.modelCode})</strong>
-                                                                {
-                                                                    o.prdPlanQty == 0 ? <div className='px-3 bg-red-600 text-white rounded-full w-fit shadow-md'>ยกเลิก</div> : (planStatus == 'wait' ? <div className='px-3 bg-gray-400 text-white rounded-full w-fit shadow-md'>รอผลิต</div> : (planStatus == 'process' ? <div className='px-3 bg-[#FFA500] text-black font-semibold rounded-full w-fit'>กำลังผลิต</div> : <div className='px-3 bg-green-700 text-white rounded-full w-fit shadow-md'>ผลิตแล้ว</div>))
-                                                                }
+                                                                <DrawItemMain qty={o.apsPlanQty} status={apsCurrent} />
                                                             </div>
                                                         </div>
                                                     </td>
@@ -322,7 +301,6 @@ function ApsSubLine() {
                                                     <td className={`border text-end pr-[4px]`}>
                                                         <div className={`pr-[4px] pt-[3px] pb-[2px]  rounded-lg font-semibold text-[14px] ${(o.prdPlanQty != undefined && o.prdPlanQty > 0) ? 'text-green-600 drop-shadow-lg' : 'text-red-500'}`}>{o.prdPlanQty}</div>
                                                     </td>
-
                                                     <td className='border text-center bg-[#F9FAFB]'>
                                                         {
                                                             isDate == true && <IconButton onClick={() => event ? setPlanSelected(o) : false}>
@@ -331,20 +309,21 @@ function ApsSubLine() {
                                                         }
                                                     </td>
                                                 </tr>
-                                            </>
+                                            </Fragment>
                                         })
                                 }
+                                {/* {
+                                    !load && <div className='text-center pb-3' onClick={() => setParamInsertPlan({
+                                        type: 'MAIN',
+                                        group: '',
+                                        seq: 0
+                                    })}>
+                                        <ButtonMtr text='เพิ่มแผนผลิต' event='' icon={<AddIcon sx={{ width: '20px', height: '20px' }} />} />
+                                    </div>
+                                } */}
                             </tbody>
                         </table>
-                        {
-                            !load && <div className='text-center pb-3' onClick={() => setParamInsertPlan({
-                                type: 'MAIN',
-                                group: '',
-                                seq: 0
-                            })}>
-                                <ButtonMtr text='เพิ่มแผนผลิต' event='' icon={<AddIcon sx={{ width: '20px', height: '20px' }} />} />
-                            </div>
-                        }
+
                     </div>
                 </div>
                 <div className='sm:col-span-6 md:col-span-6 xl:col-span-4 flex flex-col gap-3'>
@@ -358,7 +337,7 @@ function ApsSubLine() {
                                     </div>)
                                 }
                             </div>
-                            <div className=' grid sm:grid-cols-1 xl:grid-cols-2   gap-6 px-6'>
+                            <div className=' grid sm:grid-cols-1 xl:grid-cols-2   gap-6 px-6 pb-6'>
                                 {
                                     partGroup.length == 0 ? <div className='col-span-2 pb-6 text-center'>ไม่พบข้อมูล</div> : partGroup.filter((x: DictMstr) => x.refCode == lineSelected.value && x.code != 'OS').map((oGroup: DictMstr, iGroup: number) => {
                                         let group: string = oGroup.code;
@@ -378,7 +357,6 @@ function ApsSubLine() {
                                                         <td className='border py-2 pr-3' colSpan={8}>
                                                             <div className='flex  justify-between items-center'>
                                                                 <div className='px-3 text-[16px] flex items-center gap-2'>
-
                                                                     {
                                                                         group.length <= 3 ? <div className={`flex h-10 w-10 items-center justify-center rounded-full ${notify ? 'bg-red-500' : 'bg-blue-500'}`}>
                                                                             <p className='text-white'>{group}</p>
@@ -413,47 +391,61 @@ function ApsSubLine() {
                                                     </tr>
                                                     <tr>
                                                         <td className={`${notify && 'border-gray-'} border text-center w-[10%]`} rowSpan={2}>ลำดับ</td>
-                                                        <td className={`${notify && 'border-gray-'} border text-center w-[20%]`} rowSpan={2}>Model</td>
-                                                        <td className={`${notify && 'border-gray-'} border text-center py-2 w-[20%]`} colSpan={2}>Plan</td>
-                                                        <td className={`${notify && 'border-gray-'} border text-center w-[10%]`} rowSpan={2}>Result</td>
-                                                        <td className={`${notify && 'border-gray-'} border text-center w-[20%]`} colSpan={2}>Stock</td>
+                                                        <td className={`${notify && 'border-gray-'} border text-center w-[20%]`} rowSpan={2}>MODEL</td>
+                                                        <td className={`${notify && 'border-gray-'} border text-center py-2 w-[20%]`} colSpan={2}>PLAN</td>
+                                                        <td className={`${notify && 'border-gray-'} border text-center w-[10%]`} rowSpan={2}>RESULT</td>
+                                                        <td className={`${notify && 'border-gray-'} border text-center w-[20%]`} colSpan={2}>STOCK</td>
                                                         <td className={`${notify && 'border-gray-'} border text-center w-[7.5%]`} rowSpan={2}>#</td>
                                                     </tr>
                                                     <tr>
                                                         <td className="border text-center py-2 w-[7.5%]">APS</td>
                                                         <td className="border text-center w-[7.5%]">PRD</td>
-                                                        <td className="border text-center bg-orange-200">{oPartGroup == 'MC' ? 'M/C' : (oPartGroup == 'MOTOR' ? 'MOTOR' : 'CASING')}</td>
-                                                        <td className="border text-center bg-yellow-200">Main</td>
+                                                        <td className="border text-center bg-orange-200 uppercase">{oPartGroup == 'MC' ? 'M/C' : (oPartGroup == 'MOTOR' ? 'MOTOR' : 'CASING')}</td>
+                                                        <td className="border text-center bg-yellow-200">MAIN</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody >
                                                     {
-                                                        (planMachine != null && planMachine.length) ? planMachine.map((item: PropsPlanMachine, i: number) => {
+                                                        (planMachine != null && planMachine.length) ? planMachine.filter((x: PropsPlanMachine) => x.partGroup != 'OS' && !x.subLine.includes('VARNISH')).map((item: PropsPlanMachine, i: number) => {
                                                             let eventChange: boolean = (PrevPlanChange != null && PrevPlanChange.prdPlanCode == item.prdPlanCode);
                                                             let styleChange: string = eventChange ? 'border-2 border-dashed border-blue-500' : '';
+                                                            let subLine: string = item.subLine;
                                                             let production: boolean = item.prdPlanQty > 0 ? true : false;
                                                             if (item.partGroup == 'OS') {
                                                                 item.partGroup = 'FS';
                                                             }
+                                                            let result: string = (typeof item.result != 'undefined' && item.result > 0) ? item.result.toLocaleString('en') : '-';
+                                                            let wipSub: number = item.stockMachine == null ? 0 : item.stockMachine;
+                                                            let wipMain: number = item.stockMain == null ? 0 : item.stockMain;
                                                             return <tr key={i} className={`${production == false && 'opacity-50'} ${eventChange && 'animated-background-2 border-dashed border-blue-500  bg-gradient-to-l from-white via-blue-50 to-blue-200'}`}
                                                             >
                                                                 <td className={` text-center py-2 font-semibold border ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>
                                                                     <span>{item.prdSeq}</span>
                                                                 </td>
                                                                 <td className={`font-semibold  border ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>
-                                                                    <div className=' flex flex-col '>
-                                                                        <div className='pl-[4px] text-blue-600 font-semibold'>{(partMasters.filter(x => x.partno == item.partNo).length ? partMasters.filter(x => x.partno == item.partNo)[0].model_common : '')}</div>
-                                                                        <div className='pl-[4px] text-[12px]'>{item.partNo}</div>
-                                                                        {
-                                                                            production == false && <div className=' pl-[8px] bg-red-500 text-white  w-full font-light'>ไม่ผลิต</div>
-                                                                        }
+                                                                    <div className='flex'>
+                                                                        <div className='grow flex flex-col '>
+                                                                            <div className='pl-[4px] text-blue-600 font-semibold'>{(partMasters.filter(x => x.partno == item.partNo).length ? partMasters.filter(x => x.partno == item.partNo)[0].model_common : '')}</div>
+                                                                            <div className='pl-[4px] text-[12px]'>{item.partNo}  {item.cm != '' && `(${item.cm})`}</div>
+                                                                            {
+                                                                                production == false && <div className=' pl-[8px] bg-red-500 text-white  w-full font-light'>ไม่ผลิต</div>
+                                                                            }
+                                                                            {
+                                                                                subLine.length > 0 && <small className=' pl-[8px] bg-blue-300 text-black   w-full  '>{(item.partGroup != 'FS' ? subLine : subLine.replace(
+                                                                                    'FIXED SCROLL R&F', ''
+                                                                                ))}</small>
+                                                                            }
+                                                                        </div>
+                                                                        <div className='flex-none flex items-center px-3 hidden'>
+                                                                            <ReportIcon className='text-red-500' />
+                                                                        </div>
                                                                     </div>
                                                                 </td>
-                                                                <td className={`text-[14px] border text-end pr-[4px] font-semibold ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>{item.apsPlanQty.toLocaleString('en')}</td>
-                                                                <td className={`text-[14px] border text-end pr-[4px]  font-semibold ${styleChange} ${item.prdPlanQty > 0 ? 'text-green-600' : 'text-red-500'}`} onClick={() => handleEvent(eventChange, item)}>{item.prdPlanQty.toLocaleString('en')}</td>
-                                                                <td className={`border text-right pr-[4px] ${styleChange} ${(typeof item.result != 'undefined' && item.result > 0) && 'text-green-700 font-bold bg-green-50'}`} onClick={() => handleEvent(eventChange, item)}>{(typeof item.result != 'undefined' && item.result > 0) ? item.result.toLocaleString('en') : '-'}</td>
-                                                                <td className={`  border text-right pr-[4px] font-semibold ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>{item.stockMachine > 0 ? item.stockMachine.toLocaleString('en') : '-'}</td>
-                                                                <td className={` border text-right pr-[4px] font-semibold ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>{item.stockMain > 0 ? item.stockMain.toLocaleString('en') : '-'}</td>
+                                                                <td className={`text-[14px] border text-end pr-[4px] font-semibold text-blue-700/80 ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>{item.apsPlanQty.toLocaleString('en')}</td>
+                                                                <td className={`text-[14px] border text-end pr-[4px]  font-semibold ${styleChange} ${item.prdPlanQty > 0 ? 'text-green-600' : 'text-red-600'}`} onClick={() => handleEvent(eventChange, item)}>{item.prdPlanQty.toLocaleString('en')}</td>
+                                                                <td className={`border text-right pr-[4px] ${styleChange} ${(typeof item.result != 'undefined' && item.result > 0) && 'text-green-700 font-bold bg-green-50'}`} onClick={() => handleEvent(eventChange, item)}>{result}</td>
+                                                                <td className={`border text-right pr-[4px] font-semibold ${styleChange} ${wipSub == 0 ? '' : (wipSub > 0 ? 'bg-orange-100/50' : 'text-red-600 bg-orange-100/50')}`} onClick={() => handleEvent(eventChange, item)}>{wipSub.toLocaleString('en')}</td>
+                                                                <td className={` border text-right pr-[4px] font-semibold ${styleChange} ${wipMain == 0 ? '' : (wipMain > 0 ? 'bg-yellow-100/50' : 'text-red-600 bg-yellow-100/50')}`} onClick={() => handleEvent(eventChange, item)}>{wipMain.toLocaleString('en')}</td>
                                                                 <td className={`border text-center ${styleChange}`}>
                                                                     {
                                                                         eventChange ? <ChangeCircleIcon className='animate-spin text-blue-600' /> : <IconButton onClick={() => setMachinePlan(item)}>
@@ -470,7 +462,6 @@ function ApsSubLine() {
                                                     }
                                                 </tbody>
                                             </table>
-
                                         </div>
                                     })
                                 }

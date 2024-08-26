@@ -1,3 +1,5 @@
+// import { PropsWip } from "@/components/aps.main.plan";
+
 export interface StatusProps {
     status: boolean | number;
     message: string | undefined;
@@ -424,6 +426,7 @@ export interface PropsPlanMachine {
     stockMachine: number;
     reason?: string;
     result: number;
+    subLine: string;
 }
 export interface ParamUpdateSequencePlan {
     empcode: string;
@@ -519,6 +522,7 @@ export interface PropsMain {
     prdPlanQty: number;
     dataWIP: DataWIP;
     statusPlan: string;
+    apsCurrent: string;
 }
 
 export interface DataWIP {
@@ -626,6 +630,7 @@ export interface StockHistory {
     apsPlan: number;
     apsResult: number;
     apsRemainPlan: number;
+    prdSeq: number;
     fsMain: number;
     fsSubline: number;
     hsMain: number;
@@ -665,14 +670,94 @@ export interface PropsMpckLayout {
 }
 
 export interface PropsInOut {
-    drawing: string;
-    lbal: number;
-    in: number;
-    out: number;
-    group: string;
+    planDate: string;
+    wcno: string;
+    partno: string;
+    cm: string;
+    subLbal: number;
+    subRecQty: number;
+    subIssQty: number;
+    subBal: number;
+    mainLbal: number;
+    mainRecQty: number;
+    mainIssQty: number;
+    mainBal: number;
 }
 export interface ParamInOut {
     group: string;
     ymd: string;
     drawing?: string;
 }
+
+
+export interface PropsPartGroup {
+    code: string;
+    desc: string;
+}
+export interface ParamGetDrawingAdjust {
+    group: string;
+    sebango: string;
+    type: string;
+}
+
+export interface PropsGastight {
+    data: Datum[];
+    chart: PropsChart;
+}
+export interface PropGastight {
+    id: number;
+    serial: string;
+    modelCode: string;
+    insertBy: string;
+    insertDate: string;
+}
+
+export interface PropsChart {
+    labels: string[];
+    data: string[];
+}
+
+export interface Datum {
+    serial: string;
+    model: string;
+    insertDate: string;
+    modelname: string;
+}
+export interface PropsGetMainPlan {
+    main: PropsMain[];
+    wip: PropsWip[];
+}
+export interface PropsWip {
+    ym: null | string;
+    ymd: null | string;
+    wcno: null | string;
+    hhmm: string;
+    apsSeq: string;
+    modelcode: string;
+    modelname: string;
+    apsCurrent: string;
+    apsPlan: number;
+    apsResult: number;
+    apsRemainPlan: number;
+    fsMain: number | null;
+    fsSubline: number | null;
+    hsMain: number | null;
+    hsSubline: number | null;
+    lwMain: number | null;
+    lwSubline: number | null;
+    csMain: number | null;
+    csSubline: number | null;
+    bodyMain: number | null;
+    bodySubline: number | null;
+    bottomMain: number | null;
+    bottomSubline: number | null;
+    topMain: number | null;
+    topSubline: number | null;
+    statorMain: number | null;
+    statorSubline: number | null;
+    rotorMain: number | null;
+    rotorSubline: number | null;
+    createDate: Date | null;
+}
+
+

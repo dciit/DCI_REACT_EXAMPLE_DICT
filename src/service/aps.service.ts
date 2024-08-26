@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { apsapi } from '../constants';
-import { ViApsPartMasterProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, PropsInsertPlan, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, ParamGetNotify, ParamGetMainPlanTest, PropsMain, PropsMpckLayout, PropsInOut, ParamInOut } from '../interface/aps.interface';
+import { ViApsPartMasterProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, PropsInsertPlan, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, ParamGetNotify, ParamGetMainPlanTest, PropsMain, PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan } from '../interface/aps.interface';
 import { ParamAdminUpdateDrawing, PropsAdjStock } from '../pages/aps.adj.stock';
 import { PropsApsMainStockBalance } from '../interface/aps.main.interface';
 import { ParamGetLayouts } from '../interface/mp.interface';
 import { ParamMpckGetObjectByLayout } from '../interface/mpck.interface';
+import { PropsDrawing } from '../components/dialog.wip.detail';
+import { PropPrivilege } from '@/interface/admin.interface';
 const http = axios.create({
     baseURL: apsapi,
     headers: {
@@ -211,7 +213,7 @@ export function ApiMachineChangeSeq(param: ParamMachineChangeSeq[]) {
 }
 
 export function ApiGetMainPlan(param: ParamGetMainPlan) {
-    return new Promise<PropsMain[]>(resolve => {
+    return new Promise<PropsGetMainPlan>(resolve => {
         http.post(`/aps/plan`, param).then((res) => {
             resolve(res.data);
         }).catch((e) => {
@@ -298,6 +300,74 @@ export function ApiMpckGetFilters(param: any) {
 export function ApiGetInOut(param: ParamInOut) {
     return new Promise<PropsInOut[]>(resolve => {
         http.post(`/ApsGetInOut`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+
+export function ApiPartGroups() {
+    return new Promise<PropsPartGroup[]>(resolve => {
+        http.get(`/ApsPartGroups`).then((res) => {
+            resolve(res.data);
+        }).catch((e) => {
+            console.log(e)
+        })
+    })
+}
+
+
+export function ApiGetDrawingAdjust(param: ParamGetDrawingAdjust) {
+    return new Promise<PropsDrawing>(resolve => {
+        http.post(`/ApsGetDrawingAdjust`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function ApiLoginAdjStock(empcode: string) {
+    return new Promise<EmpProps>(resolve => {
+        http.get(`/adjstock/login/${empcode}`).then((res) => {
+            resolve(res.data);
+        }).catch((e) => {
+            console.log(e)
+        })
+    })
+}
+
+
+
+export function ApiGetGastight(ymd: string) {
+    return new Promise<PropsGastight>(resolve => {
+        http.get(`/GetGastight/${ymd}`).then((res) => {
+            resolve(res.data);
+        }).catch((e) => {
+            console.log(e)
+        })
+    })
+}
+
+export function ApiGetUserInformation(empcode: string) {
+    return new Promise<any>(resolve => {
+        http.get(`/GetUserInformation/${empcode}`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+
+export function ApiApsSavePrivilege(param: PropPrivilege) {
+    return new Promise<any>(resolve => {
+        http.post(`/ApsSavePrivilege`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function ApiGetLastGastight() {
+    return new Promise<any>(resolve => {
+        http.get(`/ApsGetLastGastight`).then((res) => {
             resolve(res.data);
         })
     })

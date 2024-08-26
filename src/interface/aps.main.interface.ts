@@ -1,6 +1,6 @@
 export interface PropsApsMainStockBalance {
     stockBalance: StockBalance[];
-    stockCurrent: StockCurrent[];
+    stockCurrent: PropsWipCurrent[];
     gastight: Gastight;
 }
 
@@ -13,6 +13,7 @@ export interface Gastight {
 }
 
 export interface StockBalance {
+    apsSeq: number;
     ym: string;
     ymd: string;
     wcno: string;
@@ -41,28 +42,30 @@ export interface StockBalance {
     rotorMain: number;
     rotorSubline: number;
     createDate: Date;
+    apsCurrent: string;
 }
-export interface StockCurrent {
-    ym:            string;
-    pwcno:         string;
-    modelCode:     string;
-    modelName:     string;
-    fsSubline:     number;
-    fsMain:        number;
-    hsSubline:     number;
-    hsMain:        number;
-    lwSubline:     number;
-    lwMain:        number;
-    csSubline:     number;
-    csMain:        number;
-    bodySubline:   number;
-    bodyMain:      number;
+export interface PropsWipCurrent {
+    apsCurrent: string;
+    ym: string;
+    pwcno: string;
+    modelCode: string;
+    modelName: string;
+    fsSubline: number;
+    fsMain: number;
+    hsSubline: number;
+    hsMain: number;
+    lwSubline: number;
+    lwMain: number;
+    csSubline: number;
+    csMain: number;
+    bodySubline: number;
+    bodyMain: number;
     bottomSubline: number;
-    bottomMain:    number;
-    topSubline:    number;
-    topMain:       number;
+    bottomMain: number;
+    topSubline: number;
+    topMain: number;
     statorSubline: number | null;
-    statorMain:    number | null;
-    rotorSubline:  number | null;
-    rotorMain:     number | null;
+    statorMain: number | null;
+    rotorSubline: number | null;
+    rotorMain: number | null;
 }

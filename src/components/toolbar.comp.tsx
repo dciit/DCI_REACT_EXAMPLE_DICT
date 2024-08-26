@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Divider, Avatar } from '@mui/material';
 import { useSelector } from 'react-redux';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { base, ver } from '../constants';
+import { Dropdown, MenuProps, Space } from 'antd';
+import { LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import DialogLogin from './dialog.login';
 interface moduleProps {
     text: string;
@@ -25,12 +26,12 @@ function ToolbarComponent() {
     let lightColor = 'text-[#38bdf8]';
     const [openLogin, setOpenLogin] = useState<boolean>(false);
     let moduleList: moduleProps[] = [
-        {
-            text: 'Home', icon: null, value: 'checkin'
-        },
-        {
-            text: 'Manpower', icon: null, value: 'manpower'
-        },
+        // {
+        //     text: 'Home', icon: null, value: 'checkin'
+        // },
+        // {
+        //     text: 'Manpower', icon: null, value: 'manpower'
+        // },
         {
             text: 'Main Plan', icon: null, value: 'main'
         },
@@ -43,18 +44,54 @@ function ToolbarComponent() {
         // {
         //     text: 'Stock', icon: null, value: 'stock'
         // }
+        {
+            text: 'In-Out', icon: null, value: 'inout'
+        }
     ];
+    const [items] = useState<MenuProps['items']>([
+        {
+            key: '1',
+            icon: <LoginOutlined />,
+            label: (
+                <span > เข้าสู่ระบบ</span>
+            ),
+            disabled: login,
+            onClick: () => setOpenLogin(true)
+        },
+        {
+            key: '2',
+            icon: <SettingOutlined />,
+            label: (
+                <span> ตั้งค่า</span>
+            ),
+            onClick: () => navigate(`./${base}/adjstock`)
+        },
+        {
+            key: '3',
+            label: (
+                <span>ออกจากระบบ</span>
+            ),
+            icon: <LogoutOutlined />,
+            disabled: !login,
+            onClick: () => openLogout()
+        }
+    ])
     const openLogout = async () => {
         if (confirm('คุณต้องการออกจากระบบใช่หรือไม่ ?')) {
             dispatch({ type: 'LOGOUT' });
-            location.reload();
+            setTimeout(() => {
+                location.reload();
+            }, 500);
         }
     }
+    useEffect(() => {
+
+    }, [])
     return (
         <div id='toolbar' className='sticky top-0 flex-none h-[60px] border-gray-200   border-b flex select-none sm:px-[2.75%] md:px-[2.75%] xl:px-[2.75%]  lg:border-b backdrop-blur-sm bg-white/60'>
             <div className={`flex justify-center items-center h-full flex-non gap-2 z-[99999] `}>
                 <DashboardIcon className={`${lightColor}`} />
-                <span className={`uppercase space-x-6 tracking-wide ${lightTextColor} font-semibold sm:text-sm md:text-sm`}>ASP Control</span>
+                <span className={`uppercase space-x-6 tracking-wide ${lightTextColor} font-semibold sm:text-sm md:text-sm`}>APS Control</span>
                 <div className='bg-gray-100  text-[#828ea2] font-semibold text-[12px] px-[8px] rounded-xl'>v{ver}</div>
             </div>
             <div id='module-list' className={`text-center grow flex sm:gap-3 xl:gap-6 items-center justify-end pr-6`}>
@@ -72,7 +109,27 @@ function ToolbarComponent() {
                     </div>)
                 }
             </div>
-            <div id='user-detail' className='flex-none flex items-center  justify-center gap-6 ' onClick={() => login == true ? openLogout() : setOpenLogin(true)}>
+            <div className='flex items-center justify-center gap-3'>
+                <Divider orientation="vertical" variant="middle" flexItem />
+                <Dropdown menu={{ items }}>
+                    <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                            <Avatar sx={{
+                                width: 30,
+                                height: 30,
+                                bgcolor: '#ddd',
+                            }} src={`${img}`}></Avatar>
+                            <div className='flex items-center gap-2' >
+                                <span className={`${lightTextColor}`}>{`${login ? shortName : 'LOGIN'}`}</span>
+                                {
+                                    login == true && <LogoutOutlined color='#5f5f5f' />
+                                }
+                            </div>
+                        </Space>
+                    </a>
+                </Dropdown>
+            </div>
+            {/* <div id='user-detail' className='flex-none flex items-center  justify-center gap-6 ' onClick={() => login == true ? openLogout() : setOpenLogin(true)}>
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <div className='flex items-center gap-2'>
                     <Avatar sx={{
@@ -87,7 +144,8 @@ function ToolbarComponent() {
                         }
                     </div>
                 </div>
-            </div>
+                <Menu items={items } />
+            </div> */}
             <DialogLogin open={openLogin} setOpen={setOpenLogin} />
         </div>
 
