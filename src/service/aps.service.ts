@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apsapi } from '../constants';
-import { ViApsPartMasterProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, PropsInsertPlan, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, ParamGetNotify, ParamGetMainPlanTest, PropsMain, PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan } from '../interface/aps.interface';
+import { ViApsPartMasterProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, PropsInsertPlan, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, ParamGetNotify, ParamGetMainPlanTest, PropsMain, PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan, ParamGetPartSetInByDrawing, PropDrawings, PropModels, ParamUpdateStatusPartSetIN, PropCasingInfo, PropBackflushAdjWip, ParamSublineSetting, ParamAddDrawingSubline } from '../interface/aps.interface';
 import { ParamAdminUpdateDrawing, PropsAdjStock } from '../pages/aps.adj.stock';
 import { PropsApsMainStockBalance } from '../interface/aps.main.interface';
 import { ParamGetLayouts } from '../interface/mp.interface';
@@ -182,13 +182,19 @@ export function ApiUpdateSequencePlan(param: ParamUpdateSequencePlan) {
 }
 
 export function ApiGetPartMaster() {
-    return new Promise<PropsPartMaster[]>(resolve => {
-        http.get(`/Aps/GetPartMaster`).then((res) => {
-            resolve(res.data);
-        }).catch((e) => {
-            console.log(e)
+    try {
+        return new Promise<PropsPartMaster[]>(resolve => {
+            http.get(`/Aps/GetPartMaster`).then((res) => {
+                resolve(res.data);
+            }).catch((e) => {
+                console.log(e)
+            })
         })
-    })
+    } catch {
+        return new Promise<PropsPartMaster[]>(resolve => {
+            resolve([])
+        })
+    }
 }
 
 export function ApiInsertPlan(param: PropsInsertPlan) {
@@ -242,7 +248,7 @@ export function ApiApsLogin(empcode: string) {
     })
 }
 
-export function ApiAdjStock(param: PropsAdjStock) {
+export function ApiAdjStock(param: PropsAdjStock | PropBackflushAdjWip) {
     return new Promise<StatusProps>(resolve => {
         http.post(`/ApsWipAdjust`, param).then((res) => {
             resolve(res.data);
@@ -368,6 +374,105 @@ export function ApiApsSavePrivilege(param: PropPrivilege) {
 export function ApiGetLastGastight() {
     return new Promise<any>(resolve => {
         http.get(`/ApsGetLastGastight`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIGetInfoStockSubline(group: string) {
+
+    try {
+        return new Promise<PropCasingInfo>(resolve => {
+            http.get(`/GetStockCasing/${group}`).then((res) => {
+                resolve(res.data);
+            }).catch((e: Error | any) => {
+                if (axios.isAxiosError(e)) {
+                    resolve({
+                        header: [],
+                        item: [],
+                        errorType: 'network'
+                    })
+                } else {
+                    resolve({
+                        header: [],
+                        item: [],
+                        errorType: ''
+                    })
+                }
+            }).finally(() => {
+                resolve({
+                    header: [],
+                    item: [],
+                })
+            })
+        })
+    } catch {
+        return new Promise<PropCasingInfo>(resolve => {
+            resolve({
+                header: [],
+                item: [],
+            })
+        })
+    }
+}
+
+export function APIGetPartSetInByDrawing(param: ParamGetPartSetInByDrawing) {
+    return new Promise<DictMstr[]>(resolve => {
+        http.post(`/GetPartSetInByDrawing`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function APIGetDrawings() {
+    return new Promise<PropDrawings[]>(resolve => {
+        http.get(`/GetDrawings`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function APIGetModels() {
+    return new Promise<PropModels[]>(resolve => {
+        http.get(`/GetModels`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIUpdateStatusPartSetIn(param: ParamUpdateStatusPartSetIN) {
+    return new Promise<StatusProps>(resolve => {
+        http.post(`/UpdateStatusPartSetIn`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIGetWipStockByPart(param: PropBackflushAdjWip) {
+    return new Promise<number>(resolve => {
+        http.post(`/GetWipStockByPart`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export default function emptyCache() {
+    if ('caches' in window) {
+        caches.keys().then((names) => {
+            // Delete all the cache files
+            names.forEach(name => {
+                caches.delete(name);
+            })
+        });
+    }
+}
+export function APIGetDataSublineSetting(param: ParamSublineSetting) {
+    return new Promise<any>(resolve => {
+        http.post(`/SublineSetting`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+export function APIAddDrawingSubline(param: ParamAddDrawingSubline) {
+    return new Promise<any>(resolve => {
+        http.post(`/SublineSettingAddDrawing`, param).then((res) => {
             resolve(res.data);
         })
     })

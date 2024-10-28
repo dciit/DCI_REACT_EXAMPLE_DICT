@@ -1,7 +1,7 @@
 {
   "name": "dci_react_example_dict",
   "private": true,
-  "version": "0.3.4",
+  "version": "0.3.8",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -33,6 +33,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-export-table-to-excel": "^1.0.6",
     "react-redux": "^9.1.2",
     "react-router": "^6.24.1",
     "react-router-dom": "^6.24.1",

@@ -12,19 +12,28 @@ import AdjStock from "./pages/aps.adj.stock";
 // import CacheBuster from 'react-cache-buster';
 // import Loading from "./components/loading";
 import ApsInOut from "./pages/aps.in.out";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { persistor } from "./redux/store";
+import emptyCache from "./service/aps.service";
+import APSMonitor from "./pages/aps.monitor";
+import ApsTest from "./components/aps";
+import ApsTest2 from "./pages/aps.test2";
 // import SaleForecaseDev from "../pages/saleforecase-dev";
 const Routers = () => {
-    // const redux = useSelector((state: any) => state.redux);
-    // const dispatch = useDispatch();
-    // const isProduction = import.meta.env.VITE_VERSION === 'production';
-    // useEffect(() => {
-    //     if (typeof redux?.rev == 'undefined' || redux.rev != ver) {
-    //         localStorage.clear();
-    //         persistor.purge();
-    //         dispatch({ type: 'RESET' });
-    //         dispatch({ type: 'SET_VERSION', payload: ver });
-    //     }
-    // }, []);
+    let VER = import.meta.env.VITE_VERSION;
+    const redux = useSelector((state: any) => state.redux);
+    console.log(redux)
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (typeof redux.rev == 'undefined' || redux.rev != VER) {
+            localStorage.clear();
+            emptyCache();
+            persistor.purge();
+            dispatch({ type: 'RESET' });
+            dispatch({ type: 'SET_VERSION', payload: VER });
+        }
+    }, []);
     return (
         <BrowserRouter>
             <Routes>
@@ -38,6 +47,8 @@ const Routers = () => {
                     <Route path={`/${base}/adjstock`} element={<AdjStock />} />
                     <Route path={`/${base}/inout`} element={<ApsInOut />} />
                 </Route>
+                <Route path={`/${base}/test`} element={<APSMonitor />} />
+                <Route path={`/${base}/test2`} element={<ApsTest2 />} />
             </Routes>
         </BrowserRouter>
     );

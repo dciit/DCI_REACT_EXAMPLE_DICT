@@ -1,5 +1,7 @@
 // import { PropsWip } from "@/components/aps.main.plan";
 
+import { PropShrinkGage } from "./aps.main.interface";
+
 export interface StatusProps {
     status: boolean | number;
     message: string | undefined;
@@ -726,6 +728,7 @@ export interface Datum {
 export interface PropsGetMainPlan {
     main: PropsMain[];
     wip: PropsWip[];
+    shrinkgage: PropShrinkGage;
 }
 export interface PropsWip {
     ym: null | string;
@@ -761,3 +764,86 @@ export interface PropsWip {
 }
 
 
+
+export interface PropCasingInfo {
+    item: PropSubline[];
+    header: PropCasingHeader[];
+    errorType?: string;
+}
+export interface PropSubline {
+    prdSeq: number;
+    model: string;
+    modelName:string;
+    partNo: string;
+    remainPlan: number;
+    result: number;
+    time: string;
+    wipMain: number;
+    data: PropDataSubline[];
+}
+export interface PropDataSubline {
+
+}
+export interface PropItemCasing {
+    prdSeq: string;
+    wcno: string;
+    part: string;
+    remainPlan: number;
+    result: number;
+    time: string;
+}
+export interface PropCasingHeader {
+    groupCode: string;
+    groupName: string;
+}
+export interface ParamGetPartSetInByDrawing {
+    drawing: string;
+}
+export interface PropDrawings {
+    drawing: string;
+    cm: string;
+}
+export interface PropModels {
+    model: string;
+    sebango: string;
+}
+export interface ParamUpdateStatusPartSetIN {
+    dictId: number;
+    dictStatus: string;
+    empcode: string;
+
+}
+export interface PropGroupRM {
+    groupCode: string;
+    groupDesc: string;
+}
+export interface ParamBackflushAdjWip {
+    open: boolean;
+    setOpen: Function;
+    prop: PropBackflushAdjWip | null;
+    loadBackflush: Function;
+}
+export interface PropBackflushAdjWip {
+    ym: string;
+    wcno: string;
+    partno: string;
+    cm: string;
+    adj_by: string;
+    adj_qty: number;
+    remark?: string;
+    wipBefore?: number;
+    wipAdj?: number;
+}
+export interface ParamSublineSetting {
+    method: string;
+    process?: string;
+    group?: string;
+}
+export interface ParamAddDrawingSubline {
+    model:string[];
+    wcno :string;
+    drawing:string;
+    cm:string;
+    group:string;
+    line:string;
+}

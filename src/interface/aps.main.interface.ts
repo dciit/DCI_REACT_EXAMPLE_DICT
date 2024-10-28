@@ -69,3 +69,8 @@ export interface PropsWipCurrent {
     rotorSubline: number | null;
     rotorMain: number | null;
 }
+export interface PropShrinkGage {
+    model: string;
+    sebango: string;
+    insertDate: string;
+}

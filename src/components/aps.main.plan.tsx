@@ -2,16 +2,18 @@
 import { Fragment, useEffect, useState } from 'react'
 import moment from 'moment';
 import { ApiGetLastGastight, ApiGetMainPlan } from '../service/aps.service';
-import { ApsProductionPlanProps, PropGastight, PropsGastight, PropsMain, PropsWip } from '../interface/aps.interface';
+import { ApsProductionPlanProps, PropsMain, PropsWip } from '../interface/aps.interface';
 import { StyleTdMainPlan, StyleTextSublineStock } from '../Functions';
 import RemoveCircleOutlinedIcon from '@mui/icons-material/RemoveCircleOutlined';
 // import { StockBalance, PropsWipCurrent } from '../interface/aps.main.interface';
-import { CircularProgress, Divider } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import ListPlanStatus from '../components/list.status';
 import { intervalTime } from '../constants';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DialogWipDetail from './dialog.wip.detail';
-import { Tag } from 'antd';
+import { Steps, Tag } from 'antd';
+import { LoadingOutlined, CloseOutlined } from '@ant-design/icons';
+import { PropShrinkGage } from '@/interface/aps.main.interface';
 // import DialogWipDetail from '../components/dialog.wip.detail';
 export interface lineProps {
     text: string;
@@ -35,6 +37,7 @@ interface PropsPartGroup {
 function MainPlan() {
     let dateLoop: string = '';
     const [ymd] = useState<any>(moment().subtract(8, 'hours'));
+    // const [ymd] = useState<any>(moment('20240825 04:00','YYYYMMDD HH:mm').subtract(8,'hours'));
     let columnMstr: PropsPartGroup[] = [
         { column: 'statorMain', group: 'STATOR', line: 'MAIN' },
         { column: 'statorSubline', group: 'STATOR', line: 'SUBLINE' },
@@ -63,6 +66,7 @@ function MainPlan() {
     const [WipSelected, setWipSelected] = useState<PropsWipSelected | null>(null);
     const [OpenWipDetail, setOpenWipDetail] = useState<boolean>(false);
     const [lastGastight, setLastGastight] = useState<any | null>(null);
+    const [lastShrinkGage, setLastShrinkGage] = useState<PropShrinkGage>({ model: '', sebango: '', insertDate: '' });
     let LoopDate: string = '';
     let DrawDate: boolean = false;
     const [once, setOnce] = useState<boolean>(true);
@@ -73,23 +77,8 @@ function MainPlan() {
             const intervalCall = setInterval(() => {
                 init();
             }, intervalTime);
-            const intervalRefresh = setInterval(() => {
-                location.reload();
-            }, 18000000);
-            const intervalId = setInterval(() => {
-                const date = new Date();
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                const seconds = String(date.getSeconds()).padStart(2, '0');
-                let hmsCurrent = `${hours}:${minutes}:${seconds}`;
-                if (hmsCurrent == '08:00:00' || hmsCurrent == '08:00:01' || hmsCurrent == '20:00:00' || hmsCurrent == '20:00:01') {
-                    location.reload();
-                }
-            }, 1000); // Logs time every second
             return () => {
                 clearInterval(intervalCall);
-                clearInterval(intervalRefresh);
-                clearInterval(intervalId)
             }
 
         }
@@ -102,6 +91,7 @@ function MainPlan() {
         });
         setMainPlans(res.main);
         setWips(res.wip);
+        setLastShrinkGage(res.shrinkgage)
         try {
             const lastGas = await ApiGetLastGastight();
             if (lastGas != null && lastGas != '') {
@@ -152,7 +142,7 @@ function MainPlan() {
         try {
             if (shink != null && typeof shink.dt != 'undefined') {
                 return shink.dt
-            }else{
+            } else {
                 return 'ไม่พบข้อมูล';
             }
         } catch {
@@ -161,7 +151,6 @@ function MainPlan() {
     }
     return (
         <>
-            {/* md:bg-red-500 lg:bg-yellow-500 xl:bg-green-700 2xl:bg-pink-500 */}
             <div className='grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-8 xl:grid-cols-8 gap-9'>
                 <div className='sm:col-span-1 md:col-span-1 lg:col-span-3 xl:col-span-2 flex flex-col gap-3  bg-gradient-to-r from-green-50 to-teal-50 p-6 border rounded-xl'>
                     <div className='flex items-end gap-3'>
@@ -199,6 +188,7 @@ function MainPlan() {
                                         }
                                         let isDate: boolean = moment(o.apsPlanDate).format('DD/MM/YYYY') == ymd.format('DD/MM/YYYY') ? true : false;
                                         let apsCurrent: string = o.apsCurrent;
+                                        console.log(apsCurrent)
                                         return <Fragment key={i}>
                                             {
                                                 DrawDate == true && <tr className={`cursor-pointer select-none ${noPlan && 'opacity-50'}`} >
@@ -232,19 +222,19 @@ function MainPlan() {
                     </table>
                 </div>
                 <div className='sm:col-span-1 md:col-span-1 lg:col-span-5 xl:col-span-6 flex flex-col gap-3 align-top  bg-gradient-to-r from-teal-50 to-blue-100 p-6 border rounded-xl'>
-                    <div className='grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5'>
-                        <div className='sm:col-span-1 md:col-span-2 lg:col-span-2'>
+                    <div className='grid sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-5 gap-3'>
+                        <div className='sm:col-span-1 md:col-span-1 lg:col-span-1 xl:col-span-2  flex  flex-col justify-start gap-2'>
                             <div className='flex items-end gap-3'>
                                 <span>Main Scroll Current Stock</span>
                                 <small className='text-teal-700'>แผนการผลิตที่ผ่านมาและจำนวนคงเหลือของวัตถุดิบ</small>
                             </div>
-                            <div className='flex items-center gap-3'>
+                            <div className='flex items-center gap-3 '>
                                 <div className='flex items-center gap-1'>
                                     <div className='w-3 h-3 rounded-sm bg-[#FFA500] border border-black/40'></div>
                                     <small className={`tracking-wide`}>กำลังผลิต</small>
                                 </div>
                                 <div className='flex items-center gap-1'>
-                                    <div className='w-3 h-3 rounded-sm bg-gray-400 border border-black/40'></div>
+                                    <div className='w-3 h-3 rounded-sm bg-blue-400 border border-black/40'></div>
                                     <small className={`tracking-wide`}>
                                         ผลิตถัดไป</small>
                                 </div>
@@ -254,23 +244,43 @@ function MainPlan() {
                                 </div>
                             </div>
                         </div>
-                        <div className='sm:col-span-1 md:col-span-2 lg:col-start-4 lg:col-end-6'>
-                            <div className='bg-white border rounded-md shadow-sm px-4 py-2 flex gap-3 items-center'>
-                                <span>SHRINKGAGE</span>
-                                <Tag color={lastGastight != null ? '#52c41a' : '#dc2626'}>{lastGastight != null ? 'ผลิต' : 'ยังไม่ผลิต'}</Tag>
-                                <Divider orientation="vertical" flexItem />
-                                <div className='flex flex-col'>
-                                    <div className='flex  flex-col justify-center gap-0'>
-                                        <strong>{lastGastight != null ? lastGastight.modelName : '-'} ({lastGastight != null ? lastGastight.modelCode : '-'})</strong>
-                                        <small></small>
-                                    </div>
-                                    <small>{lastGastight != null ? GetDTCurrentShinkGate(lastGastight) : '-'}</small>
-                                </div>
-                                <span className="relative flex h-3 w-3">
-                                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${lastGastight != null ? 'bg-[#52c41a]' : 'bg-[#dc2626]'} opacity-75`}></span>
-                                    <span className={`relative inline-flex rounded-full h-3 w-3 ${lastGastight != null ? 'bg-[#52c41a]' : 'bg-[#dc2626]'}`}></span>
-                                </span>
-                            </div>
+                        <div className='sm:col-span-1 md:col-span-1 lg:col-start-1 lg:col-end-6 xl:col-span-3'>
+                            <Steps
+                                className='bg-white px-6 pt-2 pb-3 rounded-md shadow-md'
+                                items={[
+                                    {
+                                        title: <div>
+                                            <div className='flex gap-3 items-center'>
+                                                <small>Shrink gage</small>
+                                                <Tag color={lastShrinkGage.model != null ? '#52c41a' : '#dc2626'}>{lastShrinkGage.model != null ? 'ผลิต' : 'ยังไม่ผลิต'}</Tag>
+                                            </div>
+                                            {
+                                                lastShrinkGage.model != null && <div className='flex items-center leading-none gap-1'>
+                                                    <small className='font-bold'>{lastShrinkGage.sebango} {`${lastShrinkGage.model}`}</small>
+                                                </div>
+                                            }   
+
+                                        </div>,
+                                        status: 'finish',
+                                        icon: lastShrinkGage.model != null ? <LoadingOutlined className={`text-[#52c41a]`} /> : <CloseOutlined className={`text-[#dc2626]`} />,
+                                    },
+                                    {
+                                        title: <div>
+                                            <div className='flex gap-3 items-center'>
+                                                <small>Gastight</small>
+                                                <Tag color={lastGastight != null ? '#2ec41a' : '#dc2626'}>{lastGastight != null ? 'ผลิต' : 'ยังไม่ผลิต'}</Tag>
+                                            </div>
+                                            {
+                                                lastGastight != null && <div className='flex items-center leading-none gap-1'>
+                                                    <small className='font-bold'>{lastGastight.modelName} {lastGastight.modelCode}</small>
+                                                </div>
+                                            }
+                                        </div>,
+                                        status: 'finish',
+                                        icon: lastGastight != null ? <LoadingOutlined className={`text-[#2ec41a] font-bold`} /> : <CloseOutlined className={`text-[#dc2626]`} />,
+                                    },
+                                ]}
+                            />
                         </div>
                     </div>
                     <div id='main_plan_page' className=' sm:col-span-1 md:col-span-1 lg:col-span-1 xl:col-span-5 overflow-auto'>
@@ -314,10 +324,10 @@ function MainPlan() {
                                     <td className={`border text-center  `}>Casing</td>
                                 </tr>
                             </thead>
-                            <tbody className='sm:text-[8px] lg:text-[10px] xl:text-[12px]  2xl:text-[14px]'>
+                            <tbody className='sm:text-[10px] lg:text-[12px] xl:text-[12px]  2xl:text-[14px]'>
                                 {
                                     load == true ? <tr><td colSpan={24} className='border'><div className='flex w-full items-center flex-col p-6 gap-2'><CircularProgress sx={{ color: '#2563EB' }} /><span className='text-[14px]'>กำลังโหลดข้อมูล</span></div></td></tr> :
-                                        <Fragment>
+                                        <Fragment key={0}>
                                             {
                                                 Wips.map((oWip: any, iWip: number) => {
                                                     oWip.modelname = oWip.modelname != null ? oWip.modelname.replace('-10', '') : '';
@@ -325,14 +335,31 @@ function MainPlan() {
                                                     let isWipCurrent: boolean = oWip.apsCurrent == 'CURRENT' ? true : false;
                                                     let isWipNext: boolean = oWip.apsCurrent == 'NEXT' ? true : false;
                                                     let isProductOfPart: boolean = oWip.apsCurrent == 'SOME' ? true : false;
-                                                    return <tr key={iWip} className={`${isWipCurrent == true && 'drop-shadow-xl font-semibold'} ${(isWipCurrent == true) && 'bg-[#FFA500]/20'} ${isWipNext == true && 'bg-gray-700/10 drop-shadow-sm'}`}>
+                                                    let isNextDay: boolean = oWip.apsCurrent == 'NEXTDAY' ? true : false;
+                                                    let isHistory = oWip.apsCurrent == 'HISTORY' ? true : false;
+                                                    let style = '';
+                                                    if(isHistory){
+                                                        style = 'bg-gray-700/20 drop-shadow-sm'
+                                                    }
+                                                    if(isWipNext){
+                                                        style = 'bg-blue-500/50'
+                                                    }
+                                                    if(isWipCurrent){
+                                                        style = 'bg-yellow-500/50'
+                                                    }
+                                                    return isNextDay == true ? <tr><td colSpan={24} className='border px-3 py-1 bg-black/80 text-white'>วันถัดไป : {oWip.hhmm}</td></tr> : <tr key={iWip} className={`${style} ${isWipCurrent == true && 'drop-shadow-xl font-semibold'} ${(isWipCurrent == true) && 'bg-[#FFA500]/20'}`}>
                                                         <td className={`border text-center ${isWipCurrent == true && 'bg-[#FFA500]/50'}`}>{oWip.apsSeq}</td>
                                                         <td className='border text-center '>{isMain == true && oWip.modelcode}</td>
                                                         <td className='border  pl-[4px]'>{oWip.modelname}</td>
                                                         <td className={`border text-end ${isWipCurrent == true && 'font-semibold'}  ${isMain == true ? 'bg-[#FFA500]/20' : 'bg-[#FFA500]/5'}`}>{oWip.apsRemainPlan != 0 ? oWip.apsRemainPlan : ''}</td>
-                                                        <td className={`border text-end ${(isWipNext == true || isProductOfPart == true) ? 'text-blue-700' : 'text-green-700'} font-semibold pr-[4px] ${isWipCurrent == true && 'py-2'}`}>{isWipCurrent == true && <LocationOnIcon className='animate-bounce' sx={{
-                                                            width: '16px', height: '16px'
-                                                        }} />}<span className={` ${isWipCurrent == true ? 'opacity-100' : 'opacity-70 drop-shadow-lg'}`}>{oWip.apsResult != 0 ? oWip.apsResult : ''}</span></td>
+                                                        <td className={`border text-end ${(isWipNext == true || isProductOfPart == true) ? 'text-blue-700' : 'text-green-700'} font-semibold pr-[4px] ${isWipCurrent == true && 'py-2'}`}>
+                                                            <div className='flex justify-end items-center gap-3'>
+                                                                {isWipCurrent == true && <span className="relative flex h-3 w-3">
+                                                                    <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-500 opacity-75"></span>
+                                                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-600"></span>
+                                                                </span>}<span className={` ${isWipCurrent == true ? 'opacity-100' : 'opacity-70 drop-shadow-lg'}`}>{oWip.apsResult != 0 ? oWip.apsResult : ''}</span>
+                                                            </div>
+                                                        </td>
                                                         <td className={`border text-center ${isWipCurrent == true ? 'bg-sky-300' : 'bg-sky-200'} font-semibold`}>{oWip.hhmm}</td>
                                                         {
                                                             columnMstr.map((oCol: PropsPartGroup, iCol: number) => <td key={iCol} className={`border cursor-pointer font-normal text-end ${isWipCurrent == true ? StyleTdMainPlan(oWip[oCol.column]) : StyleTextSublineStock(oWip[oCol.column])}`} onClick={() => {

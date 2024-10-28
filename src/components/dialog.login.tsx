@@ -106,9 +106,11 @@ function DialogLogin(props: ParamDialogLogin) {
                     {
                         warning && <div className='mt-1'><small className='text-red-500'>กรุณากรอกข้อมูลให้ครบถ้วน </small></div>
                     }
-                    {
-                        !loginFailed && <div className='mt-1'><small className='text-red-500'>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง </small></div>
-                    }
+                    <div className='mt-1'>
+                        {
+                            !loginFailed && <small className='text-red-500'>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง </small>
+                        }
+                    </div>
                     <Flex gap={6}>
                         <Button type='primary' onClick={handleLogin}>เข้าสู่ระบบ</Button>
                         <Button onClick={() => setOpen(false)}>ปิดหน้าต่าง</Button>

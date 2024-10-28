@@ -63,6 +63,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -114,11 +115,11 @@
 
   0%,
   100% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
 
   50% {
-      background-position: 100% 50%;
+    background-position: 100% 50%;
   }
 }
 
@@ -147,7 +148,7 @@ table#tbBackflush input {
 }
 
 #main_plan_page table#tbMainPlan td {
-  border-color: #a0a0a0;
+  /* border-color: #a0a0a0; */
 }
 
 /* 
@@ -155,18 +156,125 @@ table#tbMain tbody td {
   border-color: rgb(128, 128, 128);
 } */
 
-table#tbInOut th ,
+table#tbInOut th,
 table#tbInOut td {
-  border-color: black; 
+  border-color: black;
   border-width: 2px;
 }
+
 #TagTableGastight tbody tr:first-child {
   background: #1d1d1d !important;
 }
+
 #TagTableGastight tbody tr:first-child td span:not(.ant-tag),
 #TagTableGastight tbody tr:first-child td {
-  color:white !important;
+  color: white !important;
 }
-html,body,#root {
+
+html,
+body,
+#root {
   height: 100%;
+}
+
+/* 
+table#tbCasingSubline tbody td:nth-child(3){
+  color:#1d4ed8;
+  font-weight: bold;
+} */
+table#tbCasingSubline tbody td:nth-child(1),
+table#tbCasingSubline tbody td:nth-child(2) {
+  font-weight: bold;
+}
+
+table#tbCasingSubline td,
+table#tbCasingSubline th {
+  border-color: #d1d1d1;
+}
+
+table#tbAnalysisSubline tbody tr:nth-child(even) {
+  background: #cacaca21
+}
+
+
+div#aps-ds #tag-main table *,
+div#aps-ds #tag-subline table * {
+  font-size: small;
+}
+
+table#tbMain thead * {
+  font-weight: 600;
+}
+
+table#tbMain td {
+  /* border:none; */
+  /* border : 1px solid rgb(221, 221, 221); */
+  /* border-collapse: collapse; */
+}
+
+table#tbMain thead td,
+tr.current td {
+  /* border: 1px solid rgba(209, 209, 209, 0.527); */
+}
+
+tr.current td {
+  border-color: rgb(116, 116, 116);
+}
+
+table.tb-border td {
+  border: 1px solid rgb(209, 209, 209);
+  border-collapse: collapse;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  /* หรือ vertical-lr */
+  transform: rotate(180deg);
+  /* เปลี่ยนทิศทางการอ่าน */
+}
+
+table.tb-border-transparent td {
+  border-color: transparent !important;
+}
+
+table#tbMain tr.inProcess {
+  color: black;
+  background: #fec301;
+}
+
+table#tbMain .inNext {
+
+  td:not(:nth-child(4)),
+  td:not(:nth-child(5)) {
+    /* opacity: 0.5; */
+  }
+
+  td:nth-child(4),
+  td:nth-child(5) {
+    opacity: 1;
+  }
+}
+
+.text-vertical {
+  writing-mode: vertical-rl;
+  text-align: center;
+  rotate: 360deg;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.table-container {
+  overflow-x: auto; /* สร้างการเลื่อนแนวนอนถ้าขนาดตารางเกินพื้นที่ */
+  width: 100%; /* ทำให้คอนเทนเนอร์ใช้พื้นที่เต็ม */
+}
+
+#customTable {
+  width: auto; /* กำหนดความกว้างของตารางอัตโนมัติตามความกว้างของคอลัมน์ */
+  border-collapse: collapse;
+}
+
+.table-container th, .table-container td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }

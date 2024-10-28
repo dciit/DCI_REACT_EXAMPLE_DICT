@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { base, ver } from '../constants';
-import { Dropdown, MenuProps, Space } from 'antd';
+import { Dropdown, MenuProps  } from 'antd';
 import { LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import DialogLogin from './dialog.login';
 interface moduleProps {
@@ -64,7 +64,7 @@ function ToolbarComponent() {
             label: (
                 <span> ตั้งค่า</span>
             ),
-            onClick: () => navigate(`./${base}/adjstock`)
+            onClick: () => window.open(`./adjstock`)
         },
         {
             key: '3',
@@ -88,13 +88,23 @@ function ToolbarComponent() {
 
     }, [])
     return (
-        <div id='toolbar' className='sticky top-0 flex-none h-[60px] border-gray-200   border-b flex select-none sm:px-[2.75%] md:px-[2.75%] xl:px-[2.75%]  lg:border-b backdrop-blur-sm bg-white/60'>
-            <div className={`flex justify-center items-center h-full flex-non gap-2 z-[99999] `}>
-                <DashboardIcon className={`${lightColor}`} />
-                <span className={`uppercase space-x-6 tracking-wide ${lightTextColor} font-semibold sm:text-sm md:text-sm`}>APS Control</span>
-                <div className='bg-gray-100  text-[#828ea2] font-semibold text-[12px] px-[8px] rounded-xl'>v{ver}</div>
+        <div id='toolbar' className='flex flex-row sticky top-0 flex-none h-[60px] border-gray-200   border-b  select-none px-[2.75%] sm:px-[2.75%] md:px-[2.75%] xl:px-[2.75%]  lg:border-b backdrop-blur-sm bg-white/60'>
+            <div className='flex '>
+                <div className='flex-none'></div>
+                <div className='flex-none'></div>
+                <div className='flex-none'></div>
             </div>
-            <div id='module-list' className={`text-center grow flex sm:gap-3 xl:gap-6 items-center justify-end pr-6`}>
+            <div className={`flex-none flex justify-center items-center h-full  gap-2 z-[99999]`}>
+                <DashboardIcon className={`${lightColor}`} />
+                <div className='flex items-center justify-center invisible sm:visible sm:gap-2'>
+                    <div className={`flex items-center uppercase space-x-1 tracking-wide ${lightTextColor} font-semibold sm:text-sm md:text-sm`}>
+                        <span>APS</span>
+                        <span>Control</span>
+                    </div>
+                    <div className='bg-gray-100  text-[#828ea2] font-semibold text-[12px] px-[8px] rounded-xl'>v{ver}</div>
+                </div>
+            </div>
+            <div className={`grow text-center  flex sm:gap-3 xl:gap-6 items-center justify-end pr-6`} id='module-list'>
                 {
                     moduleList.map((item: moduleProps, i: number) => <div key={i} className={`uppercase sm:text-sm xl:text-md  ${comp != item.value ? `text-[#585858] ` : `text-blue-600 drop-shadow-sm`} hover:text-blue-600 cursor-pointer transition-all duration-300 gap-2 flex font-semibold`} onClick={() => navigate(`./${base}/${item.value}`)}>
                         <div className='flex items-center gap-2'>
@@ -109,43 +119,26 @@ function ToolbarComponent() {
                     </div>)
                 }
             </div>
-            <div className='flex items-center justify-center gap-3'>
+            <div className={`flex-none flex items-center justify-center gap-3`}>
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <Dropdown menu={{ items }}>
                     <a onClick={(e) => e.preventDefault()}>
-                        <Space>
+                        <div className='flex items-center justify-center gap-1'>
                             <Avatar sx={{
                                 width: 30,
                                 height: 30,
                                 bgcolor: '#ddd',
                             }} src={`${img}`}></Avatar>
-                            <div className='flex items-center gap-2' >
+                            <div className='flex items-center gap-2  invisible md:visible' >
                                 <span className={`${lightTextColor}`}>{`${login ? shortName : 'LOGIN'}`}</span>
                                 {
                                     login == true && <LogoutOutlined color='#5f5f5f' />
                                 }
                             </div>
-                        </Space>
+                        </div>
                     </a>
                 </Dropdown>
             </div>
-            {/* <div id='user-detail' className='flex-none flex items-center  justify-center gap-6 ' onClick={() => login == true ? openLogout() : setOpenLogin(true)}>
-                <Divider orientation="vertical" variant="middle" flexItem />
-                <div className='flex items-center gap-2'>
-                    <Avatar sx={{
-                        width: 30,
-                        height: 30,
-                        bgcolor: '#ddd',
-                    }} src={`${img}`}></Avatar>
-                    <div className='flex items-center gap-2' >
-                        <span className={`${lightTextColor}`}>{`${login ? shortName : 'LOGIN'}`}</span>
-                        {
-                            login == true && <LockOutlinedIcon sx={{ color: '#5f5f5f' }} />
-                        }
-                    </div>
-                </div>
-                <Menu items={items } />
-            </div> */}
             <DialogLogin open={openLogin} setOpen={setOpenLogin} />
         </div>
 

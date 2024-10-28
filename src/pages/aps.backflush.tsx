@@ -2,20 +2,20 @@
 import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { API_APS_RESULT, API_APS_UPDATE_RESULT, ApiBackflushPrivilege } from '../service/aps.service';
 import moment from 'moment';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { APSResultPartProps, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps } from '../interface/aps.interface';
+import { APSResultPartProps, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps, PropBackflushAdjWip } from '../interface/aps.interface';
 import { lines } from '../constants';
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
 import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import { useSelector } from 'react-redux';
 import DialogLogin from '../components/dialog.login';
 import { useDispatch } from 'react-redux';
-import { PropsBackflushFilter } from '../redux/initReducer';
-import { Button, Spin } from 'antd';
+import { Button, DatePicker, DatePickerProps } from 'antd';
 import ApsLoading from '@/components/aps.loading';
 import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
-import e from 'express';
+import DialogAdjWip from '@/components/dialog.adj.wip';
+import dayjs from 'dayjs';
+import { AiFillThunderbolt } from "react-icons/ai";
+
 function ApsBackflush() {
     const dispatch = useDispatch();
     const redux = useSelector((state: any) => state.redux);
@@ -32,13 +32,13 @@ function ApsBackflush() {
     const [isHiddenStd, setIsHiddenStd] = useState<boolean>(true);
     const [privileges, setPrivileges] = useState<string[]>([])
     let timeStart: number = 10;
-    const [once, setOnce] = useState<boolean>(true);
-    let reduxBackflush: PropsBackflushFilter = redux.backflush == undefined ? {} : redux.backflush;
     const [ymd, setYmd] = useState<string>(moment().subtract(8, 'hours').format('YYYYMMDD'));
     const [line, setLine] = useState<string>(lines[0].value);
     // let line: string = (reduxBackflush.line == undefined || reduxBackflush.line == 'undefined') ? lines[0].value : reduxBackflush.line;
     const [load, setLoad] = useState<boolean>(true);
     const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
+    const [editWip, setEditWip] = useState<PropBackflushAdjWip | null>(null);
+    const [openEditWip, setOpenEditWip] = useState<boolean>(false);
     useEffect(() => {
         const intervalId = setInterval(() => {
             const date = new Date();
@@ -69,12 +69,23 @@ function ApsBackflush() {
         setParts(ApiApsResult.parts);
         setStock(ApiApsResult.data);
         setStockMain(ApiApsResult.stockMain);
-        setOnce(false);
         if (load == true) {
             setLoad(false);
         }
     }
     const handleUpdateResult = async (shift: string, period: string, wcno: string, partno: string, cm: string) => {
+        console.log({
+            ym: moment(ymd).format('YYYYMM'),
+            ymd: ymd,
+            shift: shift,
+            wcno: wcno,
+            partno: partno,
+            cm: cm,
+            type: 'IN',
+            qty: Number(inpValue) < 0 ? 0 : Number(inpValue),
+            period: period,
+            createBy: empcode
+        })
         let ApiUpdateResult = await API_APS_UPDATE_RESULT({
             ym: moment(ymd).format('YYYYMM'),
             ymd: ymd,
@@ -87,9 +98,6 @@ function ApsBackflush() {
             period: period,
             createBy: empcode
         });
-        if (ApiUpdateResult.status == true) {
-            init(false);
-        }
     }
     useEffect(() => {
         init(true);
@@ -105,32 +113,35 @@ function ApsBackflush() {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+    useEffect(() => {
+        if (editWip != null && Object.keys(editWip).length > 0) {
+            if (redux?.login == undefined || redux.login == false) {
+                setOpenLogin(true);
+            } else {
+                setOpenEditWip(true);
+            }
+        }
+    }, [editWip]);
+    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+        setYmd(moment(dateString, 'YYYY-MM-DD').format('YYYYMMDD'));
+    };
     return (
         <div className='pt-3 px-3 flex flex-col' id='upload-result'>
-            <div className='mb-3'>
-                {/* {
-                    windowHeight
-                } */}
-                {/* <div className='flex  gap-2 bg-white rounded-lg border px-3 pt-[6px] pb-[6px] shadow-sm  items-center justify-center w-fit'>
-                    <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => dispatch({
-                        type: 'BACKFLUSH_SET_FILTER', payload: {
-                            ymd: moment(ymd).subtract(1, 'days').format('YYYYMMDD'), line: line
-                        }
-                    })}><KeyboardArrowLeftOutlinedIcon className='text-gray-800' /></div>
-                    <div className='select-none font-semibold'>{moment(ymd).format('DD/MM/YYYY').toUpperCase()}</div>
-                    <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => dispatch({
-                        type: 'BACKFLUSH_SET_FILTER', payload: {
-                            ymd: moment(ymd).add(1, 'days').format('YYYYMMDD'), line: line
-                        }
-                    })}><KeyboardArrowRightOutlinedIcon className='text-gray-800' /></div>
-                </div> */}
+            <div className='mb-3 border rounded-md bg-white p-6'>
                 <div className='flex items-center gap-2'>
-                    <div className='flex  gap-2 bg-white rounded-lg border px-3 pt-[6px] pb-[6px] shadow-sm  items-center justify-center w-fit'>
-                        <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => setYmd(moment(ymd).subtract(1, 'days').format('YYYYMMDD'))}><KeyboardArrowLeftOutlinedIcon className='text-gray-800' /></div>
-                        <div className='select-none font-semibold'>{moment(ymd).format('DD/MM/YYYY').toUpperCase()}</div>
-                        <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => setYmd(moment(ymd).add(1, 'days').format('YYYYMMDD'))}><KeyboardArrowRightOutlinedIcon className='text-gray-800' /></div>
+                    {/* <div className='flex  gap-2 bg-white rounded-lg border px-3 pt-[6px] pb-[6px] shadow-sm  items-center justify-center w-fit'> */}
+                    {/* <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => load == true ? false : setYmd(moment(ymd).subtract(1, 'days').format('YYYYMMDD'))}><KeyboardArrowLeftOutlinedIcon className='text-gray-800' /></div> */}
+
+
+                    {/* <div className='select-none font-semibold'>{moment(ymd).format('DD/MM/YYYY').toUpperCase()}</div> */}
+
+                    {/* <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => load == true ? false : setYmd(moment(ymd).add(1, 'days').format('YYYYMMDD'))}><KeyboardArrowRightOutlinedIcon className='text-gray-800' /></div> */}
+                    {/* </div> */}
+                    <div className='flex items-center gap-1'>
+                        <span>วันที่ : </span>
+                        <DatePicker onChange={onChange} allowClear={false} defaultValue={dayjs(ymd)} value={dayjs(ymd)} />
                     </div>
-                    <Button className='pl-3' type='primary' icon={<NearMeOutlinedIcon />} onClick={() => setYmd(moment().format('YYYYMMDD'))}>Today</Button>
+                    <Button className='pl-3' type='primary' icon={<AiFillThunderbolt />} onClick={(e) => setYmd(moment().format('YYYYMMDD'))}>วันนี้</Button>
                 </div>
                 <small className='text-red-600'>* ระบบสามารถลงยอดผลิตได้ภายในวันปัจจุบัน หากต้องการลงยอดผลิตวันอื่นๆ ติดต่อ 208 (SCM)</small>
             </div>
@@ -140,29 +151,16 @@ function ApsBackflush() {
                         {
                             lines.map((oLine: any, iLine: number) => {
                                 return <div key={iLine} className={`hover:text-blue-500 hover:font-semibold   bg-white ${oLine.value == line ? 'font-semibold text-blue-600' : 'text-gray-400 font-light'} transition-all duration-300 py-2 ${lines.length == 1 ? 'border rounded-md pl-4 pr-3 ' : (iLine == (lines.length - 1) ? 'border-r border-y rounded-r-md pl-3 pr-4' : (iLine == 0) ? 'border-l rounded-l-md border-y pl-4 pr-3' : 'border px-4')}`} onClick={() => {
-                                    // dispatch({
-                                    //     type: 'BACKFLUSH_SET_FILTER', payload: {
-                                    //         ymd: ymd, line: oLine.value
-                                    //     }
-                                    // })
                                     setLine(oLine.value)
                                 }}>{oLine.text}</div>
                             })
                         }
                     </div>
                 </div>
-                {/* <div className='flex-none '>
-                    <div className={`static right-0 top-0 w-fit transition-all duration-300 border rounded-md px-3 py-1 bg-white flex gap-2 items-center shadow-sm text-gray-600`} onClick={() => setIsHiddenStd(!isHiddenStd)}>
-                        {
-                            isHiddenStd ? <RemoveRedEyeIcon /> : <VisibilityOffIcon />
-                        }
-                        <span>({isHiddenStd ? 'เปิด' : 'ปิด'}) Standard</span>
-                    </div>
-                </div> */}
             </div>
             <div className={`grow overflow-y-auto block`} style={{ height: `${windowHeight}px` }}>
                 {
-                    load ? <ApsLoading /> : <table className='w-full text-[14px] bg-white ' id='tbBackflush'>
+                    load ? <ApsLoading message={'กำลังโหลดข้อมูล'} /> : <table className='w-full text-[14px] bg-white ' id='tbBackflush'>
                         <thead className='font-semibold bg-blue-300 border-[#4f46e5] sticky top-0'>
                             <tr>
                                 <td rowSpan={3} className='border pl-2 w-[10%]'>MODEL</td>
@@ -249,8 +247,22 @@ function ApsBackflush() {
                                                         <td className={` border  pr-1 text-[12px] text-wrap `}>
                                                             {oScheme.modelcode}
                                                         </td>
-                                                        <td className={`bg-orange-200 border text-end pr-1 font-bold ${totalStockMC < 0 && 'text-red-500'}`}>{totalStockMC != 0 ? totalStockMC.toLocaleString('en') : ''}</td>
-                                                        <td className={`border bg-yellow-200 text-end pr-1 font-bold ${totalStockMain < 0 && 'text-red-500'}`}>{totalStockMain != 0 ? totalStockMain.toLocaleString('en') : ''}</td>
+                                                        <td className={`bg-orange-200 border text-end pr-1 font-bold ${totalStockMC < 0 && 'text-red-500'}`} onClick={() => setEditWip({
+                                                            ym: '',
+                                                            partno: oScheme.partno,
+                                                            cm: oScheme.cm,
+                                                            wcno: oScheme.wcno,
+                                                            adj_by: '',
+                                                            adj_qty: 0
+                                                        })}>{totalStockMC != 0 ? totalStockMC.toLocaleString('en') : ''}</td>
+                                                        <td className={`border bg-yellow-200 text-end pr-1 font-bold ${totalStockMain < 0 && 'text-red-500'}`} onClick={() => setEditWip({
+                                                            ym: '',
+                                                            partno: oScheme.partno,
+                                                            cm: oScheme.cm,
+                                                            wcno: '904',
+                                                            adj_by: '',
+                                                            adj_qty: 0
+                                                        })}>{totalStockMain != 0 ? totalStockMain.toLocaleString('en') : ''}</td>
                                                         {
                                                             [...Array(12)].map((_: any, i: number) => {
                                                                 let period = ((timeStart + (i * 2)) >= 24 ? ((timeStart + (i * 2)) - 24) : (timeStart + (i * 2))).toString().padStart(2, '0');
@@ -327,6 +339,7 @@ function ApsBackflush() {
                 }
             </div>
             <DialogLogin open={openLogin} setOpen={setOpenLogin} />
+            <DialogAdjWip open={openEditWip} setOpen={setOpenEditWip} prop={editWip} loadBackflush={init} />
         </div >
     )
 }

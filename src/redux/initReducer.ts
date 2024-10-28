@@ -11,6 +11,7 @@ export interface MRedux {
     fullName: string;
     backflush?: PropsBackflushFilter;
     page?: string;
+    rev?: string;
 }
 const initialState: MRedux = {
     login: false,
@@ -19,6 +20,7 @@ const initialState: MRedux = {
     fullName: '',
     name: '',
     surn: '',
+    rev: ''
 }
 
 const IndexReducer = (state = initialState, action: any) => {
@@ -33,16 +35,12 @@ const IndexReducer = (state = initialState, action: any) => {
                 surn: action.payload.surn,
                 fullName: action.payload.fullName
             }
-        case 'LOGOUT':
+        case 'SET_VERSION':
             return {
                 ...state,
-                login: false,
-                empcode: '',
-                img: '',
-                name: '',
-                surn: '',
-                fullName: ''
+                rev: action.payload
             }
+
         case 'BACKFLUSH_SET_FILTER':
             return {
                 ...state,
@@ -56,6 +54,18 @@ const IndexReducer = (state = initialState, action: any) => {
                 ...state,
                 page: action.payload.page
             }
+        case 'LOGOUT':
+            return {
+                ...state,
+                login: false,
+                empcode: '',
+                img: '',
+                name: '',
+                surn: '',
+                fullName: ''
+            }
+        case 'RESET':
+            return initialState
         default:
             return state
     }
