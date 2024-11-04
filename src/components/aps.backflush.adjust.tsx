@@ -20,7 +20,7 @@ interface PropAddDrawing {
     createBy: string;
 }
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
-function SettingDrawingSubline() {
+function ApsBackflushAdjust() {
     const redux = useSelector((state: any) => state.redux);
     const empcode = redux.empcode;
     const [process, setProcess] = useState<string>('machine');
@@ -128,7 +128,7 @@ function SettingDrawingSubline() {
         <>
             <div className='flex flex-col gap-3'>
 
-                <p className='text-xl'>Setting Drawing in subline</p>
+                <p className='text-xl'>Backflush adjust</p>
                 <div id='button-group' className='flex items-center justify-between'>
                     <div className='flex gap-3 items-center'>
                         <div>
@@ -228,4 +228,4 @@ function SettingDrawingSubline() {
     )
 }
 
-export default SettingDrawingSubline
+export default ApsBackflushAdjust

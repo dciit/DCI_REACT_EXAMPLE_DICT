@@ -1,10 +1,8 @@
 //@ts-check
 import { bgCard } from '@/constants'
 import { PropsWip } from '@/interface/aps.interface';
-import { ApiGetMainPlan } from '@/service/aps.service';
-import { Button, Spin } from 'antd'
-import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import {  Spin } from 'antd'
+import  { useEffect, useState } from 'react'
 interface Params {
     load: boolean;
     Wips: PropsWip[];

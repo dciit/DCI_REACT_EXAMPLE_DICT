@@ -1,9 +1,7 @@
 //@ts-check
-import { bgMain, bgSubline } from '@/constants'
-import { PropsMain, PropsWip } from '@/interface/aps.interface';
+import { PropsMain} from '@/interface/aps.interface';
 import { Spin } from 'antd';
 import moment from 'moment';
-import React from 'react'
 interface Params {
     load: boolean;
     MainSequence: PropsMain[];

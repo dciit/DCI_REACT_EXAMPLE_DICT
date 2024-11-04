@@ -1,6 +1,6 @@
 import { LineProps } from "./interface/aps.interface";
 const base = 'aps';
-const ver = 5.8;
+const ver = 6.0;
 const hrapi = 'https://scm.dci.co.th/hrapi';
 const manpowerapi = 'http://dciweb.dci.daikin.co.jp/apsapi';
 const checkinapi = 'http://dciweb.dci.daikin.co.jp/dcimanpowerapi'
@@ -10,9 +10,9 @@ const imagepath = 'http://dcidmc.dci.daikin.co.jp/PICTURE/';
 const dateFormat = 'DD/MM/YYYY'
 const contact = 'ติดต่อ เบียร์ IT (250)'
 const lines: LineProps[] = [
-    { text: 'Machine', value: 'MC' },
-    { text: 'Casing', value: 'CASING' },
-    { text: 'Motor', value: 'MOTOR' }
+    { text: 'Machine', value: 'mc' },
+    { text: 'Casing', value: 'casing' },
+    { text: 'Motor', value: 'motor' }
 ]
 const empcode = '41256';
 const apiSoapLogin = 'http://websrv01.dci.daikin.co.jp/BudgetCharts/BudgetRestService/api/authen?';

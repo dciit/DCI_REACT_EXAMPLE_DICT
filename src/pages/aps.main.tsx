@@ -1,7 +1,7 @@
 import { Tabs } from 'antd';
 import PropaneTankIcon from '@mui/icons-material/PropaneTank';
 import Gastight from '@/components/aps.gastight';
-import MainPlan from '@/components/aps.main.plan';
+import MainPlan from '@/components/aps.main.component';
 import TabPane from 'antd/es/tabs/TabPane';
 import AssistantIcon from '@mui/icons-material/Assistant';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -29,32 +29,16 @@ export interface PropsWipSelected {
     line: string;
     type: string;
 }
-// interface PropsPartGroup {
-//     column: string;
-//     group: string;
-//     line: string;
-// }
 function ApsMain() {
     return (
-        <Tabs
-            defaultActiveKey="1"
-        // items={items.map((o, i) => {
-        //     const id = String(i + 1);
-        //     return {
-        //         key: id,
-        //         label: o.label,
-        //         children: o.children,
-        //         icon: o.icon,
-        //     };
-        // })}
-        >
+        <Tabs defaultActiveKey="1">
             <TabPane tab={<div className='flex items-center gap-2 pr-3  '><AssistantIcon /><span>Main Sequence</span></div>} key="1">
                 <MainPlan />
             </TabPane>
             <TabPane tab={<Badge.Ribbon text="ใหม่" color="green"><div className='flex items-center gap-2 pr-10'><PropaneTankIcon /><span>Gastight</span></div></Badge.Ribbon>} key="2">
                 <Gastight />
             </TabPane>
-            <TabPane tab={<Badge.Ribbon text="ใหม่" color="green"><div className='flex items-center gap-2 pr-10'><CategoryIcon /><span>PRIORITY PLAN</span></div></Badge.Ribbon>} key="3">
+            <TabPane tab={<Badge.Ribbon text="ใหม่" color="green"><div className='flex items-center gap-2 pr-10'><CategoryIcon /><span>Priority Plan</span></div></Badge.Ribbon>} key="3">
                 <ApsPriorityPlan />
             </TabPane>
         </Tabs>

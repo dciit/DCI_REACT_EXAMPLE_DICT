@@ -1,13 +1,10 @@
 //@ts-check
-import { bgMain, bgSubline, colorYellowMstr, styleTxtPrimary, txtSuccess } from '@/constants'
+import { bgMain, bgSubline, colorYellowMstr,  txtSuccess } from '@/constants'
 import { PropCasingHeader, PropCasingInfo, PropsMain, PropsWip } from '@/interface/aps.interface';
-import { APIGetInfoStockSubline } from '@/service/aps.service';
-import { Segmented, Spin } from 'antd'
-import moment from 'moment';
+import { APIGetWIPSubline } from '@/service/aps.service';
+import { Spin } from 'antd'
 import { Fragment, useEffect, useState } from 'react';
 import { AiFillProduct } from "react-icons/ai";
-import { AiFillAppstore } from "react-icons/ai";
-
 interface Params {
     load: boolean;
     Wips: PropsWip[];
@@ -57,7 +54,7 @@ const processMstr = [
     }
 ]
 function ApsTableSubline(props: Params) {
-    const { load, Wips, MainSequence } = props;
+    const { load } = props;
     const [line, setLine] = useState<string>('casing'); // Machine, Casing, Motor 
     const [process, setProcess] = useState<string>(''); // Housing, Lower, Crankshaft, FS/OS, Clamber ...
     const [casingInfo, setCasingInfo] = useState<PropCasingInfo>({
@@ -68,7 +65,7 @@ function ApsTableSubline(props: Params) {
         init();
     }, [])
     const init = async () => {
-        let RESGetStockCasing = await APIGetInfoStockSubline(process);
+        let RESGetStockCasing = await APIGetWIPSubline('sdas',process);
         setCasingInfo(RESGetStockCasing);
     }
     useEffect(() => {
@@ -160,7 +157,7 @@ function ApsTableSubline(props: Params) {
                                         const keys = Object.keys(item.data) as (keyof typeof item.data)[];
                                         let models = item.model.split(',');
                                         // let modelsInMainSeq = MainSequence.filter((main: PropsMain) => main.apsPlanDate != moment().format('YYYY-MM-DDT00:00:00')).map((main: PropsMain) => main.modelCode);
-                                        // console.log(item)
+                                        console.log(item)
                                         return (
                                             <tr key={idxWipRM}>
                                                 <td className='text-center align-top bg-white/5 border border-black/35'>{item.prdSeq}</td>
@@ -180,7 +177,7 @@ function ApsTableSubline(props: Params) {
                                                     </div>
                                                 </td>
                                                 <td className={`align-top text-end pr-1 font-semibold text-white bg-[#265df3]/80 border-y border-black/50`}>{item.remainPlan}</td>
-                                                <td className={` border-y border-black/50 align-top text-end pr-1 font-semibold tracking-widest  bg-[#28ad50]/80 text-white ${txtSuccess} drop-shadow-lg `}>{item.result}</td>
+                                                <td className={` border-y border-black/50 align-top text-end pr-1 font-semibold tracking-widest  bg-[#28ad50]/80 text-white ${txtSuccess} drop-shadow-lg `}>{item.resultSubline}</td>
                                                 <td className='  border-y border-black/50 align-top text-end pr-1 bg-[#fec91b]/80   text-black'>-</td>
                                                 {
                                                     keys.map((keyItem: any, indWipRm: number) => {

@@ -2,15 +2,16 @@ import Dialog from '@mui/material/Dialog'
 import { PropsWipSelected } from '../pages/aps.main'
 import { useEffect, useRef, useState } from 'react'
 import { ApiAdjStock, ApiGetDrawingAdjust } from '../service/aps.service'
-import ApsLoading from './aps.loading'
 import { PropsAdjStock } from '../pages/aps.adj.stock'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
 import CheckIcon from '@mui/icons-material/Check';
 import SCMLogin from './scm.login'
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Button } from 'antd'
+import { Alert, Button, Modal, Spin } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
+import { AiOutlineCheck } from "react-icons/ai";
+
 interface ParamWipDetail {
     open: boolean;
     setOpen: Function;
@@ -99,17 +100,23 @@ function DialogWipDetail(props: ParamWipDetail) {
         }
     }, [success])
     return (
-        <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth='sm'>
-            <div className='p-[1.5rem] w-full'>
-                <div className='flex flex-col'>
-                    <strong>Wip Adjust</strong>
-                    <small>You can edit or modify the numbers yourself.</small>
-                </div>
-                {
-                    login == false ? <SCMLogin /> : <div className='px-6 pt-6 pb-3'>
-                        {
-                            load ? <ApsLoading message='กำลังโหลดข้อมูล' /> : <div className='grid grid-cols-1 gap-4 py-4'>
+        <Modal open={open} title={
+            <div className='flex flex-col'>
+                <strong>Wip Adjust</strong>
+                <small>You can edit or modify the numbers yourself.</small>
+            </div>
+        } onClose={() => setOpen(false)} onCancel={() => setOpen(false)} footer={
+            <>
+                <Button type='primary' disabled={(data.adj_qty < 0 || data?.partno == null) ? true : false} title={data.adj_qty < 0 ? 'กรุณาระบุยอดคงเหลือมากกว่า 0' : (data?.partno == null ? 'ข้อมูลของ Part ไม่ครบถ้วน' : '')} onClick={data.adj_qty < 0 ? () => undefined : handleUpdateWip}  >บันทึก</Button>
+                <Button onClick={() => setOpen(false)}>ปิดหน้าต่าง</Button>
+            </>
+        }>
+            <div className='w-full'>
 
+                {
+                    login == false ? <SCMLogin /> : <div className=''>
+                        <Spin spinning={load} tip='กำลังโหลดข้อมูล'>
+                            <div className='grid grid-cols-1 gap-4 py-4'>
                                 <ItemReadonly label='MODEL' value={`${wip?.wip?.modelname} (${wip?.wip.modelcode})`} />
                                 {
                                     (data.partno != undefined && data.partno != '') && <>
@@ -155,15 +162,11 @@ function DialogWipDetail(props: ParamWipDetail) {
                                     </div>
                                 }
                             </div>
-                        }
-                        <div className='pt-6 flex justify-end gap-3 select-none'>
-                            <Button type='primary' disabled={(data.adj_qty < 0 || data?.partno == null) ? true : false} title={data.adj_qty < 0 ? 'กรุณาระบุยอดคงเหลือมากกว่า 0' : (data?.partno == null ? 'ข้อมูลของ Part ไม่ครบถ้วน' : '')} onClick={data.adj_qty < 0 ? () => undefined : handleUpdateWip}>บันทึก</Button>
-                            <Button onClick={() => setOpen(false)}>ปิดหน้าต่าง</Button>
-                        </div>
+                        </Spin>
                     </div>
                 }
             </div>
-        </Dialog>
+        </Modal>
     )
 }
 

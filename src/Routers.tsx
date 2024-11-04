@@ -16,14 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { persistor } from "./redux/store";
 import emptyCache from "./service/aps.service";
-import APSMonitor from "./pages/aps.monitor";
-import ApsTest from "./components/aps";
-import ApsTest2 from "./pages/aps.test2";
+// import APSMonitor from "./pages/aps.monitor";
+// import ApsTest2 from "./pages/aps.test2";
 // import SaleForecaseDev from "../pages/saleforecase-dev";
 const Routers = () => {
     let VER = import.meta.env.VITE_VERSION;
     const redux = useSelector((state: any) => state.redux);
-    console.log(redux)
     const dispatch = useDispatch();
     useEffect(() => {
         if (typeof redux.rev == 'undefined' || redux.rev != VER) {
@@ -47,8 +45,8 @@ const Routers = () => {
                     <Route path={`/${base}/adjstock`} element={<AdjStock />} />
                     <Route path={`/${base}/inout`} element={<ApsInOut />} />
                 </Route>
-                <Route path={`/${base}/test`} element={<APSMonitor />} />
-                <Route path={`/${base}/test2`} element={<ApsTest2 />} />
+                {/* <Route path={`/${base}/test`} element={<APSMonitor />} /> */}
+                {/* <Route path={`/${base}/test2`} element={<ApsTest2 />} /> */}
             </Routes>
         </BrowserRouter>
     );

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apsapi } from '../constants';
-import { ViApsPartMasterProps, ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, PropsInsertPlan, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, ParamGetNotify, ParamGetMainPlanTest, PropsMain, PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan, ParamGetPartSetInByDrawing, PropDrawings, PropModels, ParamUpdateStatusPartSetIN, PropCasingInfo, PropBackflushAdjWip, ParamSublineSetting, ParamAddDrawingSubline } from '../interface/aps.interface';
+import { ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, ApsNotify, EmpProps, ParamGetPlanMachine, PropsPlanMachine, ParamUpdateSequencePlan, PropsPartMaster, PropsInsertPlan, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, ParamGetNotify, ParamGetMainPlanTest,   PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan, ParamGetPartSetInByDrawing, PropDrawings, PropModels, ParamUpdateStatusPartSetIN, PropCasingInfo, PropBackflushAdjWip, ParamSublineSetting, ParamAddDrawingSubline, ParamChargeMainSeq, PropRMDetail, ParamRMDetail } from '../interface/aps.interface';
 import { ParamAdminUpdateDrawing, PropsAdjStock } from '../pages/aps.adj.stock';
 import { PropsApsMainStockBalance } from '../interface/aps.main.interface';
 import { ParamGetLayouts } from '../interface/mp.interface';
@@ -14,15 +14,15 @@ const http = axios.create({
     }
 });
 
-export function ViApsPartMaster() {
-    return new Promise<ViApsPartMasterProps[]>(resolve => {
-        http.get(`/aps/data/maininout`).then((res) => {
-            resolve(res.data);
-        }).catch((e) => {
-            console.log(e);
-        });
-    })
-}
+// export function ViApsPartMaster() {
+//     return new Promise<ViApsPartMasterProps[]>(resolve => {
+//         http.get(`/aps/data/maininout`).then((res) => {
+//             resolve(res.data);
+//         }).catch((e) => {
+//             console.log(e);
+//         });
+//     })
+// }
 // export function ApsMainGetData(date: string) {
 //     return new Promise<ApsMainProps>(resolve => {
 //         http.get(`/ApsMainGetData/${date}`).then((res) => {
@@ -32,15 +32,15 @@ export function ViApsPartMaster() {
 //         });
 //     })
 // }
-export function API_APS_PRODUCTION_PLAN(ymd: string) {
-    return new Promise<PropsMain[]>(resolve => {
-        http.get(`/ApsProductionPlan/get/${ymd}`).then((res) => {
-            resolve(res.data);
-        }).catch((e) => {
-            console.log(e);
-        });
-    })
-}
+// export function API_APS_PRODUCTION_PLAN(ymd: string) {
+//     return new Promise<PropsMain[]>(resolve => {
+//         http.get(`/ApsProductionPlan/get/${ymd}`).then((res) => {
+//             resolve(res.data);
+//         }).catch((e) => {
+//             console.log(e);
+//         });
+//     })
+// }
 
 // export function ApiGetProductionPlan(param: ParamApsGetProductionPlan) {
 //     return new Promise<PropsApsGetProductionPlan[]>(resolve => {
@@ -80,6 +80,7 @@ export function API_CHANGE_PRIORITY(ApsPlan: ApsProductionPlanProps[]) {
         });
     })
 }
+
 
 export function API_UPDATE_PLAN(param: APSUpdatePlanProps) {
     return new Promise<StatusProps>(resolve => {
@@ -379,11 +380,11 @@ export function ApiGetLastGastight() {
     })
 }
 
-export function APIGetInfoStockSubline(group: string) {
+export function APIGetWIPSubline(line: string, group: string) {
 
     try {
         return new Promise<PropCasingInfo>(resolve => {
-            http.get(`/GetStockCasing/${group}`).then((res) => {
+            http.get(`/GetWIPSubline/${line}/${group}`).then((res) => {
                 resolve(res.data);
             }).catch((e: Error | any) => {
                 if (axios.isAxiosError(e)) {
@@ -473,6 +474,22 @@ export function APIGetDataSublineSetting(param: ParamSublineSetting) {
 export function APIAddDrawingSubline(param: ParamAddDrawingSubline) {
     return new Promise<any>(resolve => {
         http.post(`/SublineSettingAddDrawing`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIChargeMainSeq(param: ParamChargeMainSeq) {
+    return new Promise<StatusProps>(resolve => {
+        http.post(`/ChargeMainSeq`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIGetRMDetail(param:ParamRMDetail){
+    return new Promise<PropRMDetail>(resolve => {
+        http.post(`/ChargeMainSeq`, param).then((res) => {
             resolve(res.data);
         })
     })

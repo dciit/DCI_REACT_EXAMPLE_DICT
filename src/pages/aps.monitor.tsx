@@ -1,5 +1,4 @@
 //@ts-check
-import ApsCurrentMain from '@/aps-components/main/aps-current-main'
 import ApsMainSequence from '@/aps-components/main/aps-main-sequence'
 import ApsMainStock from '@/aps-components/main/aps-main-stock'
 import ApsTableSubline from '@/aps-components/subline/aps-table-subline'
@@ -9,7 +8,7 @@ import { ApiGetMainPlan } from '@/service/aps.service'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 function ApsMonitor() {
-    const [ymd, setYmd] = useState<string>(moment().subtract(8, 'hours').format('YYYYMMDD'));
+    const [ymd, _] = useState<string>(moment().subtract(8, 'hours').format('YYYYMMDD'));
     const [MainSequence, setMainSequence] = useState<PropsMain[]>([]);
     const [Wips, setWips] = useState<PropsWip[]>([]);
     const [loadMain, setLoadMain] = useState<boolean>(true);
@@ -17,6 +16,7 @@ function ApsMonitor() {
         init()
     }, [])
     const init = async () => {
+        console.log('adasdada')
         const RESGetApsMainSeq = await ApiGetMainPlan({
             paramDate: ymd,
             paramWCNO: '904'

@@ -129,14 +129,6 @@ function ApsBackflush() {
         <div className='pt-3 px-3 flex flex-col' id='upload-result'>
             <div className='mb-3 border rounded-md bg-white p-6'>
                 <div className='flex items-center gap-2'>
-                    {/* <div className='flex  gap-2 bg-white rounded-lg border px-3 pt-[6px] pb-[6px] shadow-sm  items-center justify-center w-fit'> */}
-                    {/* <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => load == true ? false : setYmd(moment(ymd).subtract(1, 'days').format('YYYYMMDD'))}><KeyboardArrowLeftOutlinedIcon className='text-gray-800' /></div> */}
-
-
-                    {/* <div className='select-none font-semibold'>{moment(ymd).format('DD/MM/YYYY').toUpperCase()}</div> */}
-
-                    {/* <div className='cursor-pointer select-none hover:bg-[#4f46e510] rounded-full transition-all duration-300 text-white' onClick={() => load == true ? false : setYmd(moment(ymd).add(1, 'days').format('YYYYMMDD'))}><KeyboardArrowRightOutlinedIcon className='text-gray-800' /></div> */}
-                    {/* </div> */}
                     <div className='flex items-center gap-1'>
                         <span>วันที่ : </span>
                         <DatePicker onChange={onChange} allowClear={false} defaultValue={dayjs(ymd)} value={dayjs(ymd)} />

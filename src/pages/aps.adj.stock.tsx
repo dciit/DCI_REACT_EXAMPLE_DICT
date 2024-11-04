@@ -35,6 +35,7 @@ function AdjStock() {
         { label: 'สิทธิ', key: '1', children: <SettingPrivilege /> },
         { label: 'จัดการโมเดล', key: '2', children: <SettingModel /> },
         { label: 'Subline Management', key: '3', children: <SettingDrawingSubline /> },
+        { label: 'Backflush Adjust', key: '4', children: <SettingDrawingSubline /> },
     ]
     useEffect(() => {
         if (redux?.login == undefined || redux?.login == false) {

@@ -162,14 +162,14 @@ table#tbInOut td {
   border-width: 2px;
 }
 
-#TagTableGastight tbody tr:first-child {
+/* #TagTableGastight tbody tr:first-child {
   background: #1d1d1d !important;
-}
+} */
 
-#TagTableGastight tbody tr:first-child td span:not(.ant-tag),
+/* #TagTableGastight tbody tr:first-child td span:not(.ant-tag),
 #TagTableGastight tbody tr:first-child td {
   color: white !important;
-}
+} */
 
 html,
 body,
@@ -264,17 +264,39 @@ table#tbMain .inNext {
 }
 
 .table-container {
-  overflow-x: auto; /* สร้างการเลื่อนแนวนอนถ้าขนาดตารางเกินพื้นที่ */
-  width: 100%; /* ทำให้คอนเทนเนอร์ใช้พื้นที่เต็ม */
+  overflow-x: auto;
+  /* สร้างการเลื่อนแนวนอนถ้าขนาดตารางเกินพื้นที่ */
+  width: 100%;
+  /* ทำให้คอนเทนเนอร์ใช้พื้นที่เต็ม */
 }
 
 #customTable {
-  width: auto; /* กำหนดความกว้างของตารางอัตโนมัติตามความกว้างของคอลัมน์ */
+  width: auto;
+  /* กำหนดความกว้างของตารางอัตโนมัติตามความกว้างของคอลัมน์ */
   border-collapse: collapse;
 }
 
-.table-container th, .table-container td {
+.table-container th,
+.table-container td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+}
+
+table#tbMain tbody {
+  tr:hover {
+    cursor: pointer;
+
+    #icon-edit {
+      visibility: visible;
+      opacity: 1;
+      animation: fadeIn 1s forwards;
+    }
+  }
+
+  tr #icon-edit {
+    visibility: hidden;
+    opacity: 0;
+    animation: fadeOut 1s forwards;
+  }
 }

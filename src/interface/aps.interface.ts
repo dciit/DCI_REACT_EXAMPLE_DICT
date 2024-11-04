@@ -100,8 +100,8 @@ export interface PropsDialogNotice {
     open: boolean;
     planSelected: PropsMain | null;
     setOpen: any;
-    data: PropsMain | null;
-    setData: any;
+    // data: PropsMain | null;
+    // setData: any;
     // plan: ApsProductionPlanProps[];
     // setPlan: any;
     apsLoad: any;
@@ -525,6 +525,7 @@ export interface PropsMain {
     dataWIP: DataWIP;
     statusPlan: string;
     apsCurrent: string;
+    changePlanQty: boolean;
 }
 
 export interface DataWIP {
@@ -729,6 +730,11 @@ export interface PropsGetMainPlan {
     main: PropsMain[];
     wip: PropsWip[];
     shrinkgage: PropShrinkGage;
+    masterSubline: PropLineAndProcess[];
+}
+export interface PropLineAndProcess {
+    line: string;
+    process: string;
 }
 export interface PropsWip {
     ym: null | string;
@@ -773,12 +779,13 @@ export interface PropCasingInfo {
 export interface PropSubline {
     prdSeq: number;
     model: string;
-    modelName:string;
+    modelName: string;
     partNo: string;
+    cm: string;
     remainPlan: number;
-    result: number;
     time: string;
-    wipMain: number;
+    resultMain: number;
+    resultSubline: number;
     data: PropDataSubline[];
 }
 export interface PropDataSubline {
@@ -840,10 +847,23 @@ export interface ParamSublineSetting {
     group?: string;
 }
 export interface ParamAddDrawingSubline {
-    model:string[];
-    wcno :string;
-    drawing:string;
-    cm:string;
-    group:string;
-    line:string;
+    model: string[];
+    wcno: string;
+    drawing: string;
+    cm: string;
+    group: string;
+    line: string;
+}
+export interface ParamChargeMainSeq {
+    fPrdPlanCode: string;
+    tPrdPlanCode: string;
+    empcode: string;
+}
+export interface PropRMDetail {
+    rm:string;
+}
+export interface ParamRMDetail {
+    part: string;
+    cm: string;
+    rm_group: string;
 }
