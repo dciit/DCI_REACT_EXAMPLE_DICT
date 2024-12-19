@@ -143,9 +143,9 @@ function MachineRMStock(props: PropMachineRMStock) {
                                                                     ))}</small>
                                                                 }
                                                             </div>
-                                                            <div className='flex-none flex items-center px-3 hidden'>
+                                                            {/* <div className='flex-none flex items-center px-3 hidden'>
                                                                 <ReportIcon className='text-red-500' />
-                                                            </div>
+                                                            </div> */}
                                                         </div>
                                                     </td>
                                                     <td className={`text-[14px] border text-end pr-[4px] font-semibold text-blue-700/80 ${styleChange}`} onClick={() => handleEvent(eventChange, item)}>{item.apsPlanQty.toLocaleString('en')}</td>

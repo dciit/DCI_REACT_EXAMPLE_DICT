@@ -3,8 +3,8 @@ import { base } from "./constants";
 // import { version } from '../package.json';
 
 import Layout from "./layout";
-import ApsCheckIn from "./pages/aps.checkin";
-import Manpower from "./pages/manpower";
+// import ApsCheckIn from "./pages/aps.checkin.delete";
+// import Manpower from "./pages/manpower.delete";
 import ApsMain from "./pages/aps.main";
 import ApsBackflush from "./pages/aps.backflush";
 import ApsSubLine from "./pages/aps.subline";
@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { persistor } from "./redux/store";
 import emptyCache from "./service/aps.service";
+import BeamAnimation from "./components/beam.animation";
 // import APSMonitor from "./pages/aps.monitor";
 // import ApsTest2 from "./pages/aps.test2";
 // import SaleForecaseDev from "../pages/saleforecase-dev";
@@ -37,16 +38,13 @@ const Routers = () => {
             <Routes>
                 <Route element={<Layout />}>
                     <Route path={`/${base}/*`} element={<ApsMain />} />
-                    <Route path={`/${base}/checkin`} element={<ApsCheckIn />} />
-                    <Route path={`/${base}/manpower`} element={<Manpower />} />
                     <Route path={`/${base}/main`} element={<ApsMain />} />
                     <Route path={`/${base}/backflush`} element={<ApsBackflush />} />
                     <Route path={`/${base}/subline`} element={<ApsSubLine />} />
                     <Route path={`/${base}/adjstock`} element={<AdjStock />} />
                     <Route path={`/${base}/inout`} element={<ApsInOut />} />
                 </Route>
-                {/* <Route path={`/${base}/test`} element={<APSMonitor />} /> */}
-                {/* <Route path={`/${base}/test2`} element={<ApsTest2 />} /> */}
+                <Route path={`/${base}/beam`} element={<BeamAnimation />} />
             </Routes>
         </BrowserRouter>
     );

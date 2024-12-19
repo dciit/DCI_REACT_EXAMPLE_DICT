@@ -60,6 +60,7 @@ function ApsTableSubline(props: Params) {
     const [casingInfo, setCasingInfo] = useState<PropCasingInfo>({
         item: [],
         header: [],
+        lastUpdate:[]
     });
     useEffect(() => {
         init();

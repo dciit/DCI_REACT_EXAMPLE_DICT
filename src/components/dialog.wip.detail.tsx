@@ -1,42 +1,115 @@
-import Dialog from '@mui/material/Dialog'
-import { PropsWipSelected } from '../pages/aps.main'
 import { useEffect, useRef, useState } from 'react'
-import { ApiAdjStock, ApiGetDrawingAdjust } from '../service/aps.service'
+import { ApiAdjStock, APIGetDrawingSubline } from '../service/aps.service'
 import { PropsAdjStock } from '../pages/aps.adj.stock'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import CheckIcon from '@mui/icons-material/Check';
 import SCMLogin from './scm.login'
-import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Button, Modal, Spin } from 'antd'
+import { Alert, Badge, Button, Descriptions, DescriptionsProps, Input, Modal, notification, Radio, Select, Spin } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
-import { AiOutlineCheck } from "react-icons/ai";
+import { PropMainWIPSelected } from '@/interface/aps.interface'
 
 interface ParamWipDetail {
     open: boolean;
     setOpen: Function;
-    wip: PropsWipSelected | null;
-    type: string;
+    wip: PropMainWIPSelected | null;
 }
 export interface PropsDrawing {
-    drawing: string;
+    model: string;
+    sebango: string;
+    partno: string;
     cm: string;
     wcno: string;
-    adj_qty: number;
+    qty: number;
 }
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+const items: DescriptionsProps['items'] = [
+    {
+        key: '1',
+        label: 'Product',
+        children: 'Cloud Database',
+    },
+    {
+        key: '2',
+        label: 'Billing Mode',
+        children: 'Prepaid',
+    },
+    {
+        key: '3',
+        label: 'Automatic Renewal',
+        children: 'YES',
+    },
+    {
+        key: '4',
+        label: 'Order time',
+        children: '2018-04-24 18:00:00',
+    },
+    {
+        key: '5',
+        label: 'Usage Time',
+        children: '2019-04-24 18:00:00',
+        span: 2,
+    },
+    {
+        key: '6',
+        label: 'Status',
+        children: <Badge status="processing" text="Running" />,
+        span: 3,
+    },
+    {
+        key: '7',
+        label: 'Negotiated Amount',
+        children: '$80.00',
+    },
+    {
+        key: '8',
+        label: 'Discount',
+        children: '$20.00',
+    },
+    {
+        key: '9',
+        label: 'Official Receipts',
+        children: '$60.00',
+    },
+    {
+        key: '10',
+        label: 'Config Info',
+        children: (
+            <>
+                Data disk type: MongoDB
+                <br />
+                Database version: 3.4
+                <br />
+                Package: dds.mongo.mid
+                <br />
+                Storage space: 10 GB
+                <br />
+                Replication factor: 3
+                <br />
+                Region: East China 1
+                <br />
+            </>
+        ),
+    },
+];
 function DialogWipDetail(props: ParamWipDetail) {
     const redux = useSelector((state: any) => state.redux);
     const empcode = (typeof redux.empcode != 'undefined') ? redux.empcode : '';
-    const fullName = (typeof redux.fullName != 'undefined') ? redux.fullName : '';
     const login = (typeof redux.login != 'undefined') ? redux.login : false;
     const { open, setOpen, wip } = props;
     const [success, setSuccess] = useState<boolean>(false);
-    const [fail, setFail] = useState<boolean>(false);
     const [load, setLoad] = useState<boolean>(true);
     const [data, setData] = useState<PropsAdjStock>({ ymd: moment().format('YYYYMMDD'), wcno: '', partno: '', cm: '', adj_qty: 0, adj_by: empcode, remark: '', wipBefore: 0 });
-    const [time, setTime] = useState<string>('');
+    const [drawings, setDrawings] = useState<PropsDrawing[]>([]);
     const refInpRemark = useRef<HTMLTextAreaElement | null>(null);
     const [remarkError, setRemarkError] = useState<boolean>(false);
+    const [api, contextHolder] = notification.useNotification();
+    const [saving, setSaving] = useState<boolean>(false);
+    const openNotificationWithIcon = (type: NotificationType, message: string) => {
+        api[type]({
+            message: 'แจ้งเตือน',
+            description: message
+        });
+    };
     useEffect(() => {
         if (open == true) {
             init();
@@ -46,26 +119,26 @@ function DialogWipDetail(props: ParamWipDetail) {
     }, [open]);
     const init = async () => {
         setLoad(true);
-        if (wip?.group != undefined && wip?.wip.modelcode != undefined) {
+        if (wip?.LINE_CODE != undefined && wip?.WIP_INFO.SEBANGO != undefined) {
             try {
-                let res = await ApiGetDrawingAdjust({
-                    group: wip?.group,
-                    sebango: wip?.wip.modelcode,
-                    type: wip.type
+                let res = await APIGetDrawingSubline({
+                    group: wip?.LINE_CODE,
+                    sebango: wip?.WIP_INFO.SEBANGO,
+                    type: wip.PROCESS_CODE
                 });
-                setData({ ...data, wcno: res.wcno, partno: res.drawing, cm: res.cm, adj_by: empcode, adj_qty: res.adj_qty, wipBefore: res.adj_qty });
+                setDrawings(res);
+                setLoad(false)
             } catch {
                 setData({ ...data, wcno: '' });
             }
         }
     }
     useEffect(() => {
+        if (drawings.length) {
+            setData((prev) => ({ ...prev, partno: drawings[0].partno, cm: drawings[0].cm, wcno: drawings[0].wcno, adj_qty: drawings[0].qty, wipBefore: drawings[0].qty }));
+        }
         setLoad(false);
-    }, [data])
-
-    const ItemReadonly = ({ label, value }: { label: string, value: string }) => {
-        return <div className="grid grid-cols-4 items-center gap-4"><label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-right" >{label}</label><input className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 col-span-3 select-none" readOnly value={value} /></div>
-    }
+    }, [drawings])
 
     const handleUpdateWip = async () => {
         if (data?.remark == undefined || data.remark.trim() == '' || (data.remark.trim().length == 1 && data.remark.trim() == '-')) {
@@ -76,18 +149,20 @@ function DialogWipDetail(props: ParamWipDetail) {
         }
         setRemarkError(false);
         if (confirm(`คุณแน่ใจใช่หรือไม่ ว่าต้องการ Adj.Wip = ${data.adj_qty} ?`)) {
+            setSaving(true);
             if (isNaN(data.adj_qty) && data.adj_qty == null || data.adj_qty < 0 || data.wcno == '' || data.partno == '') {
-                alert('ข้อมูลไม่ครบถ้วน')
+                alert('ข้อมูลไม่ครบถ้วน');
                 return false;
             } else {
                 let res = await ApiAdjStock(data);
                 setData({ ...data, remark: '', wipBefore: data.adj_qty });
-                setTime(moment().format('HH:mm:ss'));
                 if (res.status == true) {
-                    setFail(false);
+                    openNotificationWithIcon('success', 'แก้ไขยอดคงเหลือเรียบร้อยแล้ว');
                     setSuccess(true);
+                    setSaving(false);
                 } else {
-                    setFail(true);
+                    openNotificationWithIcon('error', 'เกิดข้อผิดพลาดระหว่างแก้ไขข้อมูล ติดต่อ 250 เบียร์');
+                    setSaving(false);
                 }
             }
         }
@@ -100,73 +175,60 @@ function DialogWipDetail(props: ParamWipDetail) {
         }
     }, [success])
     return (
-        <Modal open={open} title={
-            <div className='flex flex-col'>
-                <strong>Wip Adjust</strong>
-                <small>You can edit or modify the numbers yourself.</small>
-            </div>
-        } onClose={() => setOpen(false)} onCancel={() => setOpen(false)} footer={
-            <>
-                <Button type='primary' disabled={(data.adj_qty < 0 || data?.partno == null) ? true : false} title={data.adj_qty < 0 ? 'กรุณาระบุยอดคงเหลือมากกว่า 0' : (data?.partno == null ? 'ข้อมูลของ Part ไม่ครบถ้วน' : '')} onClick={data.adj_qty < 0 ? () => undefined : handleUpdateWip}  >บันทึก</Button>
+        <Modal width={1000} open={open} onClose={() => setOpen(false)} onCancel={() => setOpen(false)} footer={
+            <div className={`${login == false ? 'hidden' : ''} flex items-center gap-1 justify-end`}>
+                <Button type='primary' disabled={(data.adj_qty < 0 || data?.partno == null || load) ? true : false} title={data.adj_qty < 0 ? 'กรุณาระบุยอดคงเหลือมากกว่า 0' : (data?.partno == null ? 'ข้อมูลของ Part ไม่ครบถ้วน' : '')} onClick={data.adj_qty < 0 ? () => undefined : handleUpdateWip} loading={saving} >บันทึก</Button>
                 <Button onClick={() => setOpen(false)}>ปิดหน้าต่าง</Button>
-            </>
+            </div>
         }>
             <div className='w-full'>
 
+                {contextHolder}
                 {
                     login == false ? <SCMLogin /> : <div className=''>
                         <Spin spinning={load} tip='กำลังโหลดข้อมูล'>
-                            <div className='grid grid-cols-1 gap-4 py-4'>
-                                <ItemReadonly label='MODEL' value={`${wip?.wip?.modelname} (${wip?.wip.modelcode})`} />
-                                {
-                                    (data.partno != undefined && data.partno != '') && <>
-                                        <ItemReadonly label='WCNO' value={`${data?.wcno != null ? data.wcno : 'ไม่พบข้อมูล'}`} />
-                                        <ItemReadonly label='DRAWING' value={`${data?.partno != null ? data.partno : 'ไม่พบข้อมูล'}`} />
-                                        <ItemReadonly label='CM' value={`${data?.cm != null ? data.cm : 'ไม่พบข้อมูล'}`} />
-                                        <div className="grid grid-cols-4 items-center gap-4"><label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-right" >Adj. Qty</label>
-                                            <input type='number' value={Number(data.adj_qty)} className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 col-span-3" autoFocus={true} onChange={(e) => setData({ ...data, adj_qty: e.target.value == '' ? 0 : Number(e.target.value) })} min={0} />
-                                        </div>
-                                        <ItemReadonly label='ผู้แก้ไข' value={`${fullName} (${empcode})`} />
-                                        <div className="flex flex-col gap-2 py-2">
-                                            <div className='flex gap-2 items-center'>
-                                                <span className="relative flex h-3 w-3">
-                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                                                </span>
-                                                <label className="text-red-600 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 " >หมายเหตุในการแก้ไขตัวเลข Stock
-                                                </label>
-
-                                            </div>
-                                            <TextArea rows={4} placeholder="ระบุหมายเหตุที่ต้องแก้ไขตัวเลข Stock" value={data.remark} onChange={(e) => setData({ ...data, remark: e.target.value })} ref={refInpRemark} />
-                                            {
-                                                remarkError && <Alert message="กรุณาระบุหมายเหตุ หรือ ห้ามกรอก '-' หรือ ช่องว่าง !" type="error" showIcon />
-                                            }
-                                        </div>
-                                    </>
-                                }
-                                {
-                                    success == true && <div className='grid grid-cols-4 '>
-                                        <div className='col-start-2 col-span-3 bg-green-500 text-white   pl-3 pr-4 text-center rounded-2xl w-fit py-1 shadow-md text-sm  gap-1 items-end justify-center'>
-                                            <CheckIcon />
-                                            <span>บันทึกสำเร็จแล้ว {time}</span>
-                                        </div>
-                                    </div>
-                                }
-
-                                {
-                                    fail == true && <div className='grid grid-cols-4 '>
-                                        <div className='col-start-2 col-span-3 bg-red-600 text-white   pl-3 pr-4 text-center rounded-2xl w-fit py-1 shadow-md text-sm  gap-1 items-end justify-center'>
-                                            <CloseIcon />
-                                            <span>บันทึกไม่สำเร็จ {time}</span>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
+                            <Descriptions title="WIP Information" bordered column={{ xs: 2, sm: 2, md: 3, lg: 3, xl: 2, xxl: 2 }} size='small' >
+                                <Descriptions.Item key={'Model'} label="Model">{wip?.WIP_INFO?.MODEL}</Descriptions.Item>
+                                <Descriptions.Item label="Sebango">{wip?.WIP_INFO.SEBANGO}</Descriptions.Item>
+                                <Descriptions.Item label="Drawing">
+                                    <Select className='w-full' onChange={(e) => setData({ ...data, partno: e, adj_qty: drawings.filter(x => x.partno == e)[0].qty, cm: drawings.filter(x => x.partno == e)[0].cm, wcno: drawings.filter(x => x.partno == e)[0].wcno })} value={data.partno}>
+                                        {
+                                            Array.from(new Set([...drawings.map(x => x.partno)])).map((item, index) => {
+                                                return <Select.Option key={index} value={item}>{item}</Select.Option>
+                                            })
+                                        }
+                                    </Select>
+                                </Descriptions.Item>
+                                <Descriptions.Item label="CM">{data.cm}</Descriptions.Item>
+                                <Descriptions.Item label="รหัสพื้นที่" span={2}>
+                                    <Radio.Group onChange={(e) => setData({ ...data, wcno: e.target.value, adj_qty: drawings.filter(x => x.partno == data.partno && x.wcno == e.target.value)[0].qty })} value={data.wcno}>
+                                        {
+                                            drawings.filter(x => x.partno == data.partno).map((item, index) => {
+                                                return <Radio.Button key={index} value={item.wcno}>{item.wcno}</Radio.Button>
+                                            })
+                                        }
+                                    </Radio.Group>
+                                </Descriptions.Item>
+                                <Descriptions.Item style={{ color: 'black' }} label="จำนวนคงเหลือ" span={2}>
+                                    <Input type='number' className='font-semibold focus:bg-sky-50' value={data.adj_qty} onChange={(e) => setData({ ...data, adj_qty: Number(e.target.value) })} autoFocus />
+                                </Descriptions.Item>
+                                <Descriptions.Item label="จำนวนคงเหลือ (รวม)" span={2}>
+                                    {drawings.reduce((acc, current) => acc + current.qty, 0)}
+                                </Descriptions.Item>
+                                <Descriptions.Item style={{ alignContent: 'start' }} label={<div className='flex gap-2'><span className='text-red-500'>เหตุผลที่ต้องแก้ไขตัวเลข</span><span className='text-black'>จำนวนคงเหลือ</span></div>}>
+                                    <TextArea
+                                        allowClear
+                                        placeholder="กรุณาระบุเหตุผลที่ต้องแก้ไขตัวเลขจำนวนคงเหลือ"
+                                        autoSize={{ minRows: 2, maxRows: 6 }}
+                                        value={data.remark} onChange={(e) => setData({ ...data, remark: e.target.value })} ref={refInpRemark}
+                                    />
+                                </Descriptions.Item>
+                            </Descriptions>
                         </Spin>
                     </div>
                 }
-            </div>
-        </Modal>
+            </div >
+        </Modal >
     )
 }
 

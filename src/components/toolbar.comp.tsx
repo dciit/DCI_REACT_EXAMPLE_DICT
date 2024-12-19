@@ -1,53 +1,55 @@
+//@ts-nocheck
 import { useEffect, useState } from 'react'
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import { Divider, Avatar } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { base, ver } from '../constants';
-import { Dropdown, MenuProps  } from 'antd';
-import { LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { Divider, Dropdown, MenuProps, Space } from 'antd';
+import { DownOutlined, LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import DialogLogin from './dialog.login';
+import DropdownPlant from './toolbar/dropdown.plant';
+import DrawerPlant from './toolbar/drawer.plant';
+
 interface moduleProps {
     text: string;
     icon: any | null;
     value: string;
+    disabled: boolean;
 }
+
+
 function ToolbarComponent() {
     let comp = window.location.pathname.split("/").pop();
     comp = comp == '' ? 'main' : comp;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const redux = useSelector((state: any) => state.redux);
+    const plant = redux.plant;
     const login = redux.login;
     const img = redux.img;
     const shortName = redux.fullName;
     let lightTextColor = 'text-[#0f172a]';
     let lightColor = 'text-[#38bdf8]';
     const [openLogin, setOpenLogin] = useState<boolean>(false);
+    const [openDrawer, setOpenDrawer] = useState<boolean>(false);
     let moduleList: moduleProps[] = [
-        // {
-        //     text: 'Home', icon: null, value: 'checkin'
-        // },
-        // {
-        //     text: 'Manpower', icon: null, value: 'manpower'
-        // },
         {
-            text: 'Main Plan', icon: null, value: 'main'
+            text: 'Main Plan', icon: null, value: 'main', disabled: false
         },
         {
-            text: 'Sub-Line Plan', icon: null, value: 'subline'
+            text: 'Sub-Line Plan', icon: null, value: 'subline', disabled: plant == ''
         },
         {
-            text: 'Sub-Line Result', icon: null, value: 'backflush'
+            text: 'Sub-Line Result', icon: null, value: 'backflush', disabled: plant == ''
         },
-        // {
-        //     text: 'Stock', icon: null, value: 'stock'
-        // }
         {
-            text: 'In-Out', icon: null, value: 'inout'
+            text: 'In-Out', icon: null, value: 'inout', disabled: plant == ''
         }
     ];
+
+
     const [items] = useState<MenuProps['items']>([
         {
             key: '1',
@@ -76,6 +78,8 @@ function ToolbarComponent() {
             onClick: () => openLogout()
         }
     ])
+
+
     const openLogout = async () => {
         if (confirm('คุณต้องการออกจากระบบใช่หรือไม่ ?')) {
             dispatch({ type: 'LOGOUT' });
@@ -89,12 +93,7 @@ function ToolbarComponent() {
     }, [])
     return (
         <div id='toolbar' className='flex flex-row sticky top-0 flex-none h-[60px] border-gray-200   border-b  select-none px-[2.75%] sm:px-[2.75%] md:px-[2.75%] xl:px-[2.75%]  lg:border-b backdrop-blur-sm bg-white/60'>
-            <div className='flex '>
-                <div className='flex-none'></div>
-                <div className='flex-none'></div>
-                <div className='flex-none'></div>
-            </div>
-            <div className={`flex-none flex justify-center items-center h-full  gap-2 z-[99999]`}>
+            <div className={`flex-none flex justify-center items-center h-full  gap-2 z-[99999] cursor-pointer`} onClick={() => setOpenDrawer(true)}>
                 <DashboardIcon className={`${lightColor}`} />
                 <div className='flex items-center justify-center invisible sm:visible sm:gap-2'>
                     <div className={`flex items-center uppercase space-x-1 tracking-wide ${lightTextColor} font-semibold sm:text-sm md:text-sm`}>
@@ -103,10 +102,11 @@ function ToolbarComponent() {
                     </div>
                     <div className='bg-gray-100  text-[#828ea2] font-semibold text-[12px] px-[8px] rounded-xl'>v{ver}</div>
                 </div>
+                <DropdownPlant setOpenDrawer={setOpenDrawer} />
             </div>
             <div className={`grow text-center  flex sm:gap-3 xl:gap-6 items-center justify-end pr-6`} id='module-list'>
                 {
-                    moduleList.map((item: moduleProps, i: number) => <div key={i} className={`uppercase sm:text-sm xl:text-md  ${comp != item.value ? `text-[#585858] ` : `text-blue-600 drop-shadow-sm`} hover:text-blue-600 cursor-pointer transition-all duration-300 gap-2 flex font-semibold`} onClick={() => navigate(`./${base}/${item.value}`)}>
+                    moduleList.map((item: moduleProps, i: number) => <div key={i} className={`flex items-center justify-center uppercase sm:text-sm xl:text-md  ${comp != item.value ? (item.disabled == true ? `text-[#585858]/20` : `text-[#585858] `) : (item.disabled == true ? '' : `text-blue-600 drop-shadow-sm hover:text-blue-600`)}  cursor-pointer transition-all duration-300 gap-2 flex font-semibold`} onClick={() => item.disabled == true ? null : navigate(`./${base}/${item.value}`)}>
                         <div className='flex items-center gap-2'>
                             {
                                 comp == item.value && <span className="relative flex h-3 w-3">
@@ -116,14 +116,14 @@ function ToolbarComponent() {
                             }
                             <span>{item.text}</span>
                         </div>
+                        <Divider type="vertical" style={{ background: '#e5e7eb' }} />
                     </div>)
                 }
             </div>
             <div className={`flex-none flex items-center justify-center gap-3`}>
-                <Divider orientation="vertical" variant="middle" flexItem />
                 <Dropdown menu={{ items }}>
                     <a onClick={(e) => e.preventDefault()}>
-                        <div className='flex items-center justify-center gap-1'>
+                        <div className='flex items-center justify-center gap-2'>
                             <Avatar sx={{
                                 width: 30,
                                 height: 30,
@@ -140,6 +140,7 @@ function ToolbarComponent() {
                 </Dropdown>
             </div>
             <DialogLogin open={openLogin} setOpen={setOpenLogin} />
+            <DrawerPlant openDrawer={openDrawer} closeDrawer={setOpenDrawer} />
         </div>
 
     )

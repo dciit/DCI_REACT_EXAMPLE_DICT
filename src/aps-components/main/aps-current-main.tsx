@@ -87,7 +87,7 @@ function ApsCurrentMain(props: Params) {
                                     </div>
                                 </div>
                             </div>
-                            <div className=' flex gap-2 hidden'>
+                            {/* <div className=' flex gap-2 hidden'>
                                 <div className='flex-1 flex flex-col border border-gray-50/5 shadow-xl  rounded-md pt-[4px] pb-[4px] '>
                                     <div className='flex items-center gap-1 justify-center'>
                                         <div className='w-2 h-2 rounded-full bg-sky-500'></div>
@@ -115,7 +115,7 @@ function ApsCurrentMain(props: Params) {
                                         {(sequenceCurrent.plan - sequenceCurrent.result).toLocaleString()}
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className=' bg-[#1e1f23] rounded-md shadow-xl'>

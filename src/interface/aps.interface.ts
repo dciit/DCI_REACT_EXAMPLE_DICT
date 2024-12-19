@@ -1,6 +1,6 @@
 // import { PropsWip } from "@/components/aps.main.plan";
 
-import { PropShrinkGage } from "./aps.main.interface";
+import { PropGastightMainWIP, PropShrinkGage } from "./aps.main.interface";
 
 export interface StatusProps {
     status: boolean | number;
@@ -96,16 +96,6 @@ export interface GasTightProps {
     cnt: number;
 }
 
-export interface PropsDialogNotice {
-    open: boolean;
-    planSelected: PropsMain | null;
-    setOpen: any;
-    // data: PropsMain | null;
-    // setData: any;
-    // plan: ApsProductionPlanProps[];
-    // setPlan: any;
-    apsLoad: any;
-}
 
 
 export interface DictMstr {
@@ -263,15 +253,6 @@ export interface GasTightProps {
     cnt: number;
 }
 
-export interface PropsDialogNotice {
-    open: boolean;
-    setOpen: any;
-    data: PropsMain | null;
-    setData: any;
-    // plan: ApsProductionPlanProps[];
-    // setPlan: any;
-    apsLoad: any;
-}
 
 
 export interface DictMstr {
@@ -730,7 +711,22 @@ export interface PropsGetMainPlan {
     main: PropsMain[];
     wip: PropsWip[];
     shrinkgage: PropShrinkGage;
+    axiscore: PropShrinkGage;
+    gastight: PropGastightMainWIP;
     masterSubline: PropLineAndProcess[];
+    wip_in_line: PropWIPInline[];
+    gastight_result: any[];
+    main_wip: any[];
+    main_seq: any[];
+    main_header: any[];
+}
+export interface PropWIPInline {
+    process: string;
+    wip_inline_qty: number;
+    wip_ok?: number;
+    wip_ng?: number;
+    model?: string;
+    sebango?: string;
 }
 export interface PropLineAndProcess {
     line: string;
@@ -774,15 +770,18 @@ export interface PropsWip {
 export interface PropCasingInfo {
     item: PropSubline[];
     header: PropCasingHeader[];
+    lastUpdate: any[];
     errorType?: string;
 }
 export interface PropSubline {
+    prdPlanCode: string;
     prdSeq: number;
     model: string;
     modelName: string;
     partNo: string;
     cm: string;
     remainPlan: number;
+    apsPlanQty: number;
     time: string;
     resultMain: number;
     resultSubline: number;
@@ -860,10 +859,175 @@ export interface ParamChargeMainSeq {
     empcode: string;
 }
 export interface PropRMDetail {
-    rm:string;
+    rm: string;
+    rm_cm: string;
+    rm_group_code: string;
+    rm_group_desc: string;
 }
 export interface ParamRMDetail {
     part: string;
     cm: string;
     rm_group: string;
+}
+export interface PropApsProdPlan {
+    prdPlanCode: string;
+    wcno: string;
+    subline: string;
+    apsCurrent: null;
+    apsSeq: string;
+    apsPlanDate: Date;
+    apsDistribute: string;
+    prdSeq: string;
+    partNo: string;
+    cm: string;
+    apsPlanQty: number;
+    prdPlanQty: number;
+    rev: string;
+    lrev: string;
+    creBy: string;
+    creDt: Date;
+    updBy: string;
+    updDt: Date;
+}
+
+
+export interface PropMainSeq {
+    PRD_PLANCODE: string;
+    YMD: string;
+    PRD_SEQ: number | string;
+    MODEL: string;
+    SEBANGO: string;
+    APS_PLAN: number | string;
+    PRD_PLAN: number | string;
+    PRD_STATUS: string;
+    PRD_RESULT: number | string;
+    PLN_STATUS: string;
+    PLN_CURRENT: string;
+    PRD_REMAIN: number | string;
+    PLN_START_DT: string;
+    PLN_END_DT: string;
+    PRD_START_DT: string;
+    PRD_END_DT: string;
+    PRD_START_HOUR: string;
+    PRD_END_HOUR: string;
+    PRD_TIME: string;
+    PRD_PRIORITY: number | string;
+    PRD_QTY_OF_PERIOD: number | string;
+    STATOR_MAIN: string;
+    STATOR_SUBLINE: string;
+    ROTOR_MAIN: string;
+    ROTOR_SUBLINE: string;
+    HS_MAIN: string;
+    HS_SUBLINE: string;
+    CS_MAIN: string;
+    CS_SUBLINE: string;
+    FS_MAIN: string;
+    FS_SUBLINE: string;
+    LW_MAIN: string;
+    LW_SUBLINE: string;
+    BODY_MAIN: string;
+    BODY_SUBLINE: string;
+    TOP_MAIN: string;
+    TOP_SUBLINE: string;
+    BOTTOM_MAIN: string;
+    BOTTOM_SUBLINE: string;
+}
+
+export interface PropMainWIPSelected {
+    WIP_INFO: PropMainSeq;
+    LINE_CODE: string;
+    PROCESS_CODE: string;
+}
+
+
+
+
+export interface PropHistoryMainPlan {
+    data: PropItemHistoryMainPlan[];
+    header: PropRouter[];
+}
+
+export interface PropItemHistoryMainPlan {
+    [key: string]: any;
+    YMD: string;
+    TIME: string;
+    APS_SEQ: string;
+    MODELCODE: string;
+    MODELNAME: string;
+    APS_PLAN: number;
+    APS_RESULT: number;
+    APS_REMAIN_PLAN: number;
+    FS_MAIN: number;
+    FS_SUBLINE: number;
+    HS_MAIN: number;
+    HS_SUBLINE: number;
+    LW_MAIN: number;
+    LW_SUBLINE: number;
+    CS_MAIN: number;
+    CS_SUBLINE: number;
+    BODY_MAIN: number;
+    BODY_SUBLINE: number;
+    BOTTOM_MAIN: number;
+    BOTTOM_SUBLINE: number;
+    TOP_MAIN: number;
+    TOP_SUBLINE: number;
+    STATOR_MAIN: number;
+    STATOR_SUBLINE: number;
+    ROTOR_MAIN: number;
+    ROTOR_SUBLINE: number;
+    CreateDate: Date;
+}
+
+export interface PropRouter {
+    CODE: string;
+    LINE_GROUP: string;
+    LINE_CODE: string;
+    LINE_TXT: string;
+    PROCESS_CODE: string;
+    PROCESS_TXT: string;
+    COLUMN_NAME: string;
+}
+
+export interface PropSublineSeq {
+    data: PropDataSublineSeq[];
+    router: PropRouterSublineSeq[];
+}
+
+export interface PropRouterSublineSeq {
+    PROCESS_CODE: string;
+    PROCESS_TXT: string;
+}
+
+export interface PropDataSublineSeq {
+    [key: string | number]: string | number;
+    PRD_SEQ: string;
+    PRD_PLAN_CODE: string;
+    WCNO: string;
+    SUBLINE: string;
+    APS_SEQ: string;
+    APS_PLAN_DATE: string;
+    COMMON_SEBANGO_SUPPORT_PLAN: string;
+    COMMON_SEBANGO: string;
+    COMMON_MODEL: string;
+    PART_NO: string;
+    CM: string;
+    PROCESS_CODE: string;
+    PLN_STATUS: string;
+    APS_PLAN_QTY: number;
+    PRD_PLAN_QTY: number;
+    PRD_QTY: number;
+    PLN_REMAIN: number;
+}
+
+export interface PropApsPlnInfo {
+    data: PropDataApsPlnInfo[];
+    load: boolean;
+}
+
+export interface PropDataApsPlnInfo {
+    PRD_PLAN_CODE: string;
+    COMMON_MODEL: string;
+    PART_NO: string;
+    CM: string;
+    PRD_PLAN_QTY: number;
 }

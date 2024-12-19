@@ -1,16 +1,11 @@
-//@ts-nocheck
-import { Button, Result, Tabs, Typography } from 'antd';
+import { Button, Result, Tabs  } from 'antd';
 import SettingModel from '@/components/child.setting/setting.drawing';
-import SettingWIP from '@/components/child.setting/setting.edit.wip';
 import SettingPrivilege from '@/components/child.setting/setting.privilege';
 import SettingDrawingSubline from './aps.setting.drawing.subline';
-import { AiFillGold } from "react-icons/ai";
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DialogLogin from '@/components/dialog.login';
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { Navigate, useNavigate } from 'react-router';
-import { base } from '@/constants';
+import APSMaster from './aps.master';
 export interface PropsAdjStock {
     ymd: string;
     wcno: string;
@@ -35,7 +30,7 @@ function AdjStock() {
         { label: 'สิทธิ', key: '1', children: <SettingPrivilege /> },
         { label: 'จัดการโมเดล', key: '2', children: <SettingModel /> },
         { label: 'Subline Management', key: '3', children: <SettingDrawingSubline /> },
-        { label: 'Backflush Adjust', key: '4', children: <SettingDrawingSubline /> },
+        { label: 'Master', key: '4', children: <APSMaster /> },
     ]
     useEffect(() => {
         if (redux?.login == undefined || redux?.login == false) {

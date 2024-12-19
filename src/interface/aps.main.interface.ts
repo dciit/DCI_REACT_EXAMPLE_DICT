@@ -72,5 +72,13 @@ export interface PropsWipCurrent {
 export interface PropShrinkGage {
     model: string;
     sebango: string;
-    insertDate: string;
+    total:number;
+    produced :number;
+}
+
+export interface PropGastightMainWIP {
+    model: string;
+    sebango: string;
+    total:number;
+    produced:number;
 }

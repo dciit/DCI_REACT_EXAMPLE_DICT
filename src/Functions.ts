@@ -16,11 +16,11 @@ export function ConvStrToNum(val: string) {
 }
 
 export function StyleTdMainPlan(val: string | number | null) {
-    let style: string = Number(val) == 0 ? 'font-semibold text-red-600 bg-white' : (Number(val) > 0 ? 'font-semibold text-green-700 bg-green-100' : 'font-semibold text-red-600 bg-red-200')
+    let style: string = Number(val) == 0 ? 'font-bold text-red-600 ' : (Number(val) > 0 ? 'font-bold text-green-700 bg-green-100' : 'font-bold text-red-600 bg-red-200')
     return style;
 }
 export function StyleTextSublineStock(val: string | number | null) {
-    let style: string = Number(val) == 0 ? 'font-semibold text-red-600 bg-white' : (Number(val) > 0 ? '' : 'font-semibold text-red-600')
+    let style: string = Number(val) == 0 ? 'font-semibold text-red-600 ' : (Number(val) > 0 ? '  ' : 'font-semibold text-red-600')
     return style;
 }
 export function Comma(val: string | number | null, def: string = '') {
@@ -30,3 +30,6 @@ export function Comma(val: string | number | null, def: string = '') {
         return def;
     }
 }
+export const isNumber = (value: unknown): boolean => {
+    return typeof value === 'number';
+};

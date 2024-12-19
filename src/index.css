@@ -147,9 +147,6 @@ table#tbBackflush input {
   margin: 0;
 }
 
-#main_plan_page table#tbMainPlan td {
-  /* border-color: #a0a0a0; */
-}
 
 /* 
 table#tbMain tbody td {
@@ -175,6 +172,7 @@ html,
 body,
 #root {
   height: 100%;
+  width: 100% !important;
 }
 
 /* 
@@ -206,16 +204,6 @@ table#tbMain thead * {
   font-weight: 600;
 }
 
-table#tbMain td {
-  /* border:none; */
-  /* border : 1px solid rgb(221, 221, 221); */
-  /* border-collapse: collapse; */
-}
-
-table#tbMain thead td,
-tr.current td {
-  /* border: 1px solid rgba(209, 209, 209, 0.527); */
-}
 
 tr.current td {
   border-color: rgb(116, 116, 116);
@@ -243,7 +231,6 @@ table#tbMain tr.inProcess {
 }
 
 table#tbMain .inNext {
-
   td:not(:nth-child(4)),
   td:not(:nth-child(5)) {
     /* opacity: 0.5; */
@@ -299,4 +286,32 @@ table#tbMain tbody {
     opacity: 0;
     animation: fadeOut 1s forwards;
   }
+}
+
+@keyframes beamAnimation {
+  from {
+    stroke-dashoffset: 20;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.beam-line {
+  animation: beamAnimation 1s linear infinite;
+}
+
+@keyframes beamAnimation-reverse {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+
+.beam-line-reverse {
+  animation: beamAnimation-reverse 1s linear infinite;
 }

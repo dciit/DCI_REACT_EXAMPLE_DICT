@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import ApsDialogManpower from "../components/aps.display.manpower";
 import { ManpowerLineTitleInfo, MPEmpOTInfo, ManpowerInfo, MPDisplayInfo, EmployeeInfo } from "../interface/mp.interface";
 import { API_GET_EMP_OT, API_GET_MANPOWER_TITLE, API_GET_MANPOWER } from "../service/manpower.service";
-import ApsCheckIn from "./aps.checkin";
+import ApsCheckIn from "./aps.checkin.delete";
 
 function Manpower() {
   const [isInitial, setisInitial] = useState<boolean>(false);

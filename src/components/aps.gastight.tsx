@@ -76,10 +76,6 @@ function Gastight() {
                             <Input type="date" className='drop-shadow-sm border rounded-md px-3' value={moment(ymd, 'YYYYMMDD').format('YYYY-MM-DD')} onChange={(e) => setYmd(moment(e.target.value).format('YYYYMMDD'))} />
                         </div>
                         <Button type='primary' icon={<AiOutlineSearch />} onClick={init}>ค้นหา</Button>
-                        {/* <div className='w-fit flex items-center gap-2'>
-                        <span>กะผลิต : </span>
-                        <input type="date" className='drop-shadow-sm border rounded-md px-3' value={moment(ymd, 'YYYYMMDD').format('YYYY-MM-DD')} onChange={(e) => setYmd(moment(e.target.value).format('YYYYMMDD'))} />
-                    </div> */}
                     </div>
                 </Card>
 

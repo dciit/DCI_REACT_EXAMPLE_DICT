@@ -18,20 +18,12 @@ function DialogEditPlanMachine(props: ParamDialogEditPlanMachine) {
     const { open, setOpen, MachinePlan, apsLoad } = props;
     const redux = useSelector((state: any) => state.redux);
     const login = (typeof redux.login != 'undefined') ? redux.login : false;
-    // const [warning, setWarning] = useState<boolean>(false);
     const [plan, setPlan] = useState<PropsPlanMachine | null>(null);
     const [reason, setReason] = useState<string>('');
     const [remark, setRemark] = useState<string>('');
     const [reasons, setReasons] = useState<DictMstr[]>([]);
     const [WrnReason, setWrnReason] = useState<boolean>(false);
     const [WrnQty, setWrnQty] = useState<boolean>(false);
-    useEffect(() => {
-        // if (remark.length) {
-        //     setWarning(false);
-        // } else {
-        //     setWarning(true);
-        // }
-    }, [remark]);
     const initData = async () => {
         let resReason: DictMstr[] = await API_GET_REASON();
         setReasons(resReason);
@@ -91,7 +83,6 @@ function DialogEditPlanMachine(props: ParamDialogEditPlanMachine) {
     return (
         <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth={'sm'} >
             <DialogContent>
-
                 {
                     login == false ? <Login /> : <div className='flex flex-col gap-3'>
                         <div className='flex flex-col gap-1'>
@@ -172,14 +163,7 @@ function DialogEditPlanMachine(props: ParamDialogEditPlanMachine) {
                                 </div>
                             </div>
                             <div className='flex gap-2 items-center justify-end'>
-                                <div onClick={() => setOpen(false)}>
-                                    <ButtonMtr text='ปิดหน้าต่าง' event='red' />
-                                </div>
-                                {
-                                    plan != null && <div onClick={() => handleUpdatePlan()}>
-                                        <ButtonMtr text='บันทึก' event='' />
-                                    </div>
-                                }
+                              
                             </div>
                         </div>
                     </div>

@@ -81,7 +81,7 @@ function SettingDrawing() {
                 </div>
             </div>
             <div className='flex flex-col gap-2 items-start '>
-                <Button icon={<PlusOutlined />} type='primary' onClick={() => setOpenDialogAddModelToDrawing(true)} disabled={param.drawing == ''}>เพิ่มโมเดล</Button>
+                <Button icon={<PlusOutlined />} type='primary' onClick={() => setOpenDialogAddModelToDrawing(true)} disabled={param.drawing == '' || true}>เพิ่มโมเดล</Button>
                 <Table size='small' loading={loading} columns={columns} dataSource={data} className='border w-full' pagination={false} />
             </div>
             <DialogAddModelToDrawing open={openDialogAddModelToDrawing} setOpen={setOpenDialogAddModelToDrawing} load={handleSearch} />

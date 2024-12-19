@@ -4,20 +4,18 @@ import { API_APS_RESULT, API_APS_UPDATE_RESULT, ApiBackflushPrivilege } from '..
 import moment from 'moment';
 import { APSResultPartProps, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps, PropBackflushAdjWip } from '../interface/aps.interface';
 import { lines } from '../constants';
-import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
-import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import { useSelector } from 'react-redux';
 import DialogLogin from '../components/dialog.login';
-import { useDispatch } from 'react-redux';
 import { Button, DatePicker, DatePickerProps } from 'antd';
 import ApsLoading from '@/components/aps.loading';
-import NearMeOutlinedIcon from '@mui/icons-material/NearMeOutlined';
 import DialogAdjWip from '@/components/dialog.adj.wip';
 import dayjs from 'dayjs';
 import { AiFillThunderbolt } from "react-icons/ai";
+import { AiOutlineSetting } from "react-icons/ai";
+import ModalWIPInfo from '@/components/modal.wip.info';
 
 function ApsBackflush() {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const redux = useSelector((state: any) => state.redux);
     let login: boolean = redux.login;
     let empcode: string = redux.empcode;
@@ -39,6 +37,8 @@ function ApsBackflush() {
     const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
     const [editWip, setEditWip] = useState<PropBackflushAdjWip | null>(null);
     const [openEditWip, setOpenEditWip] = useState<boolean>(false);
+    const [WIPInfo, setWIPInfo] = useState<any>();
+    const [openWIPInfo, setOpenWIPInfo] = useState<boolean>(false);
     useEffect(() => {
         const intervalId = setInterval(() => {
             const date = new Date();
@@ -54,6 +54,14 @@ function ApsBackflush() {
             clearInterval(intervalId)
         }
     }, [])
+
+    useEffect(() => {
+        if (WIPInfo != '' && typeof WIPInfo != 'undefined') {
+            setOpenWIPInfo(true);
+        } else {
+            setOpenWIPInfo(false);
+        }
+    }, [WIPInfo])
     const init = async (load: boolean) => {
         if (load == true) {
             setLoad(true);
@@ -74,19 +82,7 @@ function ApsBackflush() {
         }
     }
     const handleUpdateResult = async (shift: string, period: string, wcno: string, partno: string, cm: string) => {
-        console.log({
-            ym: moment(ymd).format('YYYYMM'),
-            ymd: ymd,
-            shift: shift,
-            wcno: wcno,
-            partno: partno,
-            cm: cm,
-            type: 'IN',
-            qty: Number(inpValue) < 0 ? 0 : Number(inpValue),
-            period: period,
-            createBy: empcode
-        })
-        let ApiUpdateResult = await API_APS_UPDATE_RESULT({
+        await API_APS_UPDATE_RESULT({
             ym: moment(ymd).format('YYYYMM'),
             ymd: ymd,
             shift: shift,
@@ -98,6 +94,12 @@ function ApsBackflush() {
             period: period,
             createBy: empcode
         });
+        let ApiApsResult = await API_APS_RESULT({
+            wc: line,
+            ym: moment(ymd).format('YYYYMM'),
+            ymd: ymd
+        });
+        setStock(ApiApsResult.data);
     }
     useEffect(() => {
         init(true);
@@ -150,6 +152,7 @@ function ApsBackflush() {
                     </div>
                 </div>
             </div>
+
             <div className={`grow overflow-y-auto block`} style={{ height: `${windowHeight}px` }}>
                 {
                     load ? <ApsLoading message={'กำลังโหลดข้อมูล'} /> : <table className='w-full text-[14px] bg-white ' id='tbBackflush'>
@@ -221,12 +224,17 @@ function ApsBackflush() {
                                                         </Fragment>
                                                     }
                                                     <tr key={iScheme + '' + iPartGroup}>
-                                                        <td className='border pl-2 bg-blue-200'>
-                                                            <div className='flex flex-col items-start break-words'>
-                                                                <span className='font-bold'>{oScheme.partno} {oScheme.cm}
-                                                                    <small className='ml-1'>({oScheme.wcno})</small>
-                                                                </span>
-                                                                <span className='text-[12px] text-black font-semibold'>{oScheme.model_common}</span>
+                                                        <td className='border pl-2 bg-blue-200 pr-2'>
+                                                            <div className='flex items-center justify-between  align-top break-words py-2 h-full'>
+                                                                <div className='flex flex-col leading-none gap-1 z-[100]'>
+                                                                    <span className='font-semibold'>{oScheme.partno} {oScheme.cm}
+                                                                        <small className='ml-1'>({oScheme.wcno})</small>
+                                                                    </span>
+                                                                    <strong className='text-[12px] text-black'>{oScheme.model_common}</strong>
+                                                                </div>
+                                                                <div className='cursor-pointer' onClick={() => setWIPInfo(oScheme.partno)}>
+                                                                    <AiOutlineSetting />
+                                                                </div>
                                                             </div>
                                                         </td>
                                                         <td className={`${isHiddenStd && 'hidden'} border text-center`}>{oScheme.stdMC > 0 ? oScheme.stdMC : ''}</td>
@@ -236,8 +244,10 @@ function ApsBackflush() {
                                                         <td className={`${isHiddenStd && 'hidden'} border text-center`}>{oScheme.stdCapShift > 0 ? oScheme.stdCapShift : ''}</td>
                                                         <td className={`${isHiddenStd && 'hidden'} border text-center`}>{oScheme.stdCapDay > 0 ? oScheme.stdCapDay : ''}</td>
                                                         <td className={`${isHiddenStd && 'hidden'} border text-center`}>{oScheme.stdNeedDay > 0 ? oScheme.stdNeedDay : ''}</td>
-                                                        <td className={` border  pr-1 text-[12px] text-wrap `}>
-                                                            {oScheme.modelcode}
+                                                        <td className={` border  pr-1 text-[12px] `}>
+                                                            <div className='flex text-wrap '>
+                                                                {oScheme.modelcode}
+                                                            </div>
                                                         </td>
                                                         <td className={`bg-orange-200 border text-end pr-1 font-bold ${totalStockMC < 0 && 'text-red-500'}`} onClick={() => setEditWip({
                                                             ym: '',
@@ -295,7 +305,7 @@ function ApsBackflush() {
                                                                                 }
                                                                             }
                                                                         }}
-                                                                        defaultValue={(Qty == 0) ? '' : Qty}
+                                                                        defaultValue={(Qty <= 0) ? '' : Qty}
                                                                         onFocus={(_: ChangeEvent<HTMLInputElement>) => {
                                                                             if (readOnly == false) {
                                                                                 setInpValue(Qty)
@@ -332,6 +342,7 @@ function ApsBackflush() {
             </div>
             <DialogLogin open={openLogin} setOpen={setOpenLogin} />
             <DialogAdjWip open={openEditWip} setOpen={setOpenEditWip} prop={editWip} loadBackflush={init} />
+            <ModalWIPInfo open={openWIPInfo} setWIPInfo={setWIPInfo} WIPInfo={WIPInfo} />
         </div >
     )
 }
