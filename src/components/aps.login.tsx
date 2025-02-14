@@ -1,6 +1,4 @@
 import { ChangeEvent, useState } from 'react';
-// import axios from 'axios';
-// import { apiSoapLogin } from '../constants';
 import { useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
@@ -10,7 +8,6 @@ function Login() {
     const dispatch = useDispatch();
     const [load, setload] = useState<boolean>(false);
     const [username, setUsername] = useState<string>('');
-    // const [password, setPassword] = useState<string>('');
     const [warning, setWarning] = useState<boolean>(false);
     const [loginFailed, setLoginFailed] = useState<boolean>(false);
     const handleLogin = async () => {
@@ -33,44 +30,13 @@ function Login() {
                         }
                     })
                     setLoginFailed(true);
-                    // setTimeout(() => {
-                        // location.reload();
-                    // }, 1500);
                 }
             } catch {
                 toast.error('ไม่สามารถเข้าสู่ระบบได้')
             }
         }
-        // if (username == '' || password == '') {
-        //     setWarning(true);
-        //     toast.error('กรุณาระบุชื่อผู้ใช้หรือรหัสผ่านให้ครบถ้วน')
-        //     return false;
-        // } else {
-        //     axios.get<any>(`${apiSoapLogin}username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`)
-        //         .then(response => {
-        //             if (response.data[0].EmpCode != null && response.data[0].EmpCode != '') {
-        //                 toast.success('เข้าสู่ระบบเรียบร้อยแล้ว');
-        //                 dispatch({
-        //                     type: 'LOGIN', payload: {
-        //                         empcode: response.data[0].EmpCode,
-        //                         img: response.data[0].EmpPic,
-        //                         name: '',
-        //                         surn: '',
-        //                         fullName: response.data[0].ShortName
-        //                     }
-        //                 })
-        //                 setLoginFailed(true);
-        //             } else {
-        //                 setLoginFailed(false);
-        //             }
-        //         })
-        //         .catch(error => {
-        //             console.log(error)
-        //         });
-        // }
     }
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        console.log(event.key)
         if (event.key === 'Enter') {
             handleLogin();
         }
@@ -91,13 +57,6 @@ function Login() {
                     setWarning(false);
                 }}  onKeyDown={handleKeyDown}/>
             </div>
-            {/* <div className='flex flex-col mt-3 gap-1'>
-                <span>รหัสผ่าน</span>
-                <input type="password" className=' rounded-t border-b border-b-[#747474] px-3 py-2 bg-gray-100' placeholder='กรอกรหัสผ่าน' onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setPassword(e.target.value);
-                    setWarning(false);
-                }} />
-            </div> */}
             {
                 warning && <div className='mt-1'><small className='text-red-500'>กรุณากรอกข้อมูลให้ครบถ้วน </small></div>
             }

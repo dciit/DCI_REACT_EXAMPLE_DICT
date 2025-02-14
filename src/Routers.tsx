@@ -1,25 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { base } from "./constants";
-// import { version } from '../package.json';
-
 import Layout from "./layout";
-// import ApsCheckIn from "./pages/aps.checkin.delete";
-// import Manpower from "./pages/manpower.delete";
 import ApsMain from "./pages/aps.main";
 import ApsBackflush from "./pages/aps.backflush";
 import ApsSubLine from "./pages/aps.subline";
 import AdjStock from "./pages/aps.adj.stock";
-// import CacheBuster from 'react-cache-buster';
-// import Loading from "./components/loading";
 import ApsInOut from "./pages/aps.in.out";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { persistor } from "./redux/store";
 import emptyCache from "./service/aps.service";
-import BeamAnimation from "./components/beam.animation";
-// import APSMonitor from "./pages/aps.monitor";
-// import ApsTest2 from "./pages/aps.test2";
-// import SaleForecaseDev from "../pages/saleforecase-dev";
 const Routers = () => {
     let VER = import.meta.env.VITE_VERSION;
     const redux = useSelector((state: any) => state.redux);
@@ -44,7 +34,6 @@ const Routers = () => {
                     <Route path={`/${base}/adjstock`} element={<AdjStock />} />
                     <Route path={`/${base}/inout`} element={<ApsInOut />} />
                 </Route>
-                <Route path={`/${base}/beam`} element={<BeamAnimation />} />
             </Routes>
         </BrowserRouter>
     );

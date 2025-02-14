@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { apsapi } from '../constants';
-import { ApsProductionPlanProps, DictMstr, StatusProps, APSUpdatePlanProps, APSUpdateResultParam, ApsResult, APSResultProps, EmpProps, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan, ParamGetPartSetInByDrawing, PropDrawings, PropModels, ParamUpdateStatusPartSetIN, PropCasingInfo, PropBackflushAdjWip, ParamSublineSetting, ParamAddDrawingSubline, ParamChargeMainSeq, PropRMDetail, ParamRMDetail, PropApsProdPlan } from '../interface/aps.interface';
+import { ApsProductionPlanProps, DictMstr, PropStatus, APSUpdatePlanProps, ParamUpdateBackflush, PropBackflush, APSResultProps, EmpProps, ParamMachineChangeSeq, PropsPart, ParamGetPart, ParamGetMainPlan, PropsMpckLayout, PropsInOut, ParamInOut, PropsPartGroup, ParamGetDrawingAdjust, PropsGastight, PropsGetMainPlan, ParamGetPartSetInByDrawing, PropDrawings, PropModels, ParamUpdateStatusPartSetIN, PropCasingInfo, PropItemAdjWIP, ParamSublineSetting, ParamAddDrawingSubline, PropRMDetail, ParamRMDetail } from '../interface/aps.interface';
 import { ParamAdminUpdateDrawing, PropsAdjStock } from '../pages/aps.adj.stock';
-import { ParamGetLayouts } from '../interface/mp.interface';
 import { ParamMpckGetObjectByLayout } from '../interface/mpck.interface';
 import { PropsDrawing } from '../components/dialog.wip.detail';
 import { PropPrivilege } from '@/interface/admin.interface';
@@ -12,54 +11,6 @@ const http = axios.create({
         'Content-Type': 'application/json;charset=UTF-8;json/html; charset=UTF-8',
     }
 });
-
-// export function ViApsPartMaster() {
-//     return new Promise<ViApsPartMasterProps[]>(resolve => {
-//         http.get(`/aps/data/maininout`).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e);
-//         });
-//     })
-// }
-// export function ApsMainGetData(date: string) {
-//     return new Promise<ApsMainProps>(resolve => {
-//         http.get(`/ApsMainGetData/${date}`).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e);
-//         });
-//     })
-// }
-// export function API_APS_PRODUCTION_PLAN(ymd: string) {
-//     return new Promise<PropsMain[]>(resolve => {
-//         http.get(`/ApsProductionPlan/get/${ymd}`).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e);
-//         });
-//     })
-// }
-
-// export function ApiGetProductionPlan(param: ParamApsGetProductionPlan) {
-//     return new Promise<PropsApsGetProductionPlan[]>(resolve => {
-//         http.post(`/Aps/GetProductionPlan`, param).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e);
-//         });
-//     })
-// }
-
-// export function API_GET_GASTIGHT(date: string) {
-//     return new Promise<WipProps[]>(resolve => {
-//         http.get(`/aps/gastight/get/${date}`).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e);
-//         });
-//     })
-// }
 export function API_GET_REASON() {
     return new Promise<DictMstr[]>(resolve => {
         http.get(`/aps/dictmstr/reason`).then((res) => {
@@ -71,7 +22,7 @@ export function API_GET_REASON() {
 }
 
 export function API_CHANGE_PRIORITY(ApsPlan: ApsProductionPlanProps[]) {
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/ApsPlanChangePrioriry`, ApsPlan).then((res) => {
             resolve(res.data);
         }).catch((e) => {
@@ -82,7 +33,7 @@ export function API_CHANGE_PRIORITY(ApsPlan: ApsProductionPlanProps[]) {
 
 
 export function API_UPDATE_PLAN(param: APSUpdatePlanProps) {
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/ApsUpdatePlan`, param).then((res) => {
             resolve(res.data);
         }).catch((e) => {
@@ -91,7 +42,7 @@ export function API_UPDATE_PLAN(param: APSUpdatePlanProps) {
     })
 }
 // export function API_APS_INSERT_PLAN(props: APSInsertPlanProps) {
-//     return new Promise<StatusProps>(resolve => {
+//     return new Promise<PropStatus>(resolve => {
 //         http.post(`/ApsInsertPlan`, props).then((res) => {
 //             resolve(res.data);
 //         }).catch((e) => {
@@ -110,7 +61,8 @@ export function API_GET_MODEL_MASTER(param: ParamGetPart) {
     })
 }
 
-export function API_APS_RESULT(param: ApsResult) {
+
+export function API_APS_RESULT(param: PropBackflush) {
     return new Promise<APSResultProps>(resolve => {
         http.post(`/Aps/GetBackflush`, param).then((res) => {
             resolve(res.data);
@@ -120,9 +72,9 @@ export function API_APS_RESULT(param: ApsResult) {
     })
 }
 
-export function API_APS_UPDATE_RESULT(param: APSUpdateResultParam) {
-    return new Promise<StatusProps>(resolve => {
-        http.post(`/Aps/UpdateBackflush`, param).then((res) => [
+export function APIUpdateBackflush(param: ParamUpdateBackflush) {
+    return new Promise<PropStatus>(resolve => {
+        http.post(`/UpdateBackflush`, param).then((res) => [
             resolve(res.data)
         ]).catch((e) => {
             console.log(e);
@@ -140,76 +92,8 @@ export function ApiGetPartGroupMaster() {
     })
 }
 
-// export function ApiGetNotify(param: ParamGetNotify) {
-//     return new Promise<ApsNotify[]>(resolve => {
-//         http.post(`/ApsGetNotify`, param).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e)
-//         })
-//     })
-// }
-
-
-// export function API_APS_NOTIFY_LOGIN(empcode: string) {
-//     return new Promise<EmpProps>(resolve => {
-//         http.get(`/aps/notify/login/${empcode}`).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e)
-//         })
-//     })
-// }
-
-// export function ApiApsGetPlanMachine(param: ParamGetPlanMachine) {
-//     return new Promise<PropsPlanMachine[]>(resolve => {
-//         http.post(`/Aps/GetPlanMachine`, param).then((res) => [
-//             resolve(res.data)
-//         ]).catch((e) => {
-//             console.log(e);
-//         })
-//     })
-// }
-
-// export function ApiUpdateSequencePlan(param: ParamUpdateSequencePlan) {
-//     return new Promise<StatusProps>(resolve => {
-//         http.post(`/Aps/UpdateSequencePlan`, param).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e)
-//         })
-//     })
-// }
-
-// export function ApiGetPartMaster() {
-//     try {
-//         return new Promise<PropsPartMaster[]>(resolve => {
-//             http.get(`/Aps/GetPartMaster`).then((res) => {
-//                 resolve(res.data);
-//             }).catch((e) => {
-//                 console.log(e)
-//             })
-//         })
-//     } catch {
-//         return new Promise<PropsPartMaster[]>(resolve => {
-//             resolve([])
-//         })
-//     }
-// }
-
-// export function ApiInsertPlan(param: PropsInsertPlan) {
-//     return new Promise<StatusProps>(resolve => {
-//         http.post(`/Aps/InsertPlan`, param).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e)
-//         })
-//     })
-// }
-
-
 export function ApiMachineChangeSeq(param: ParamMachineChangeSeq[]) {
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/Aps/MachineChangeSeq`, param).then((res) => {
             resolve(res.data);
         }).catch((e) => {
@@ -218,9 +102,9 @@ export function ApiMachineChangeSeq(param: ParamMachineChangeSeq[]) {
     })
 }
 
-export function ApiGetMainPlan(param: ParamGetMainPlan) {
+export function APIGetMainPlan(param: ParamGetMainPlan) {
     return new Promise<PropsGetMainPlan>(resolve => {
-        http.post(`/aps/plan`, param).then((res) => {
+        http.post(`/GetMainPlan`, param).then((res) => {
             resolve(res.data);
         }).catch((e) => {
             console.log(e)
@@ -248,8 +132,8 @@ export function ApiApsLogin(empcode: string) {
     })
 }
 
-export function ApiAdjStock(param: PropsAdjStock | PropBackflushAdjWip) {
-    return new Promise<StatusProps>(resolve => {
+export function ApiAdjStock(param: PropsAdjStock | PropItemAdjWIP) {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/ApsWipAdjust`, param).then((res) => {
             resolve(res.data);
         }).catch((e) => {
@@ -258,31 +142,12 @@ export function ApiAdjStock(param: PropsAdjStock | PropBackflushAdjWip) {
     })
 }
 
-// export function ApiGetStockSubline(param: ParamGetMainPlanTest) {
-//     return new Promise<PropsApsMainStockBalance>(resolve => {
-//         http.post(`/ApsGetStockSubline`, param).then((res) => {
-//             resolve(res.data);
-//         }).catch((e) => {
-//             console.log(e)
-//         })
-//     })
-// }
-
 export function ApiAdminUpdateDrawing(param: ParamAdminUpdateDrawing) {
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/ApsAdminUpdateDrawing`, param).then((res) => {
             resolve(res.data);
         }).catch((e) => {
             console.log(e)
-        })
-    })
-}
-
-
-export function ApiGetLayouts(param: ParamGetLayouts) {
-    return new Promise<PropsMpckLayout[]>(resolve => {
-        http.post(`/mpck/getLayoutlist`, param).then((res) => {
-            resolve(res.data);
         })
     })
 }
@@ -443,14 +308,14 @@ export function APIGetModels() {
 }
 
 export function APIUpdateStatusPartSetIn(param: ParamUpdateStatusPartSetIN) {
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/UpdateStatusPartSetIn`, param).then((res) => {
             resolve(res.data);
         })
     })
 }
 
-export function APIGetWipStockByPart(param: PropBackflushAdjWip) {
+export function APIGetWipStockByPart(param: PropItemAdjWIP) {
     return new Promise<number>(resolve => {
         http.post(`/GetWipStockByPart`, param).then((res) => {
             resolve(res.data);
@@ -514,7 +379,7 @@ export function APIUpdateApsProdPlan(param: any) {
 
 export function APIUpdateSeqSublineSeq(FromPrdPlanCode: string, ToPrdPlanCode: string) {
     console.log(`/AspProductionPlan/change/seq`)
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/AspProductionPlan/change/seq`, { FromPrdPlanCode, ToPrdPlanCode }).then((res) => {
             resolve(res.data);
         })
@@ -537,7 +402,7 @@ export function APIGetWIPInfo(PartNo: string) {
     })
 }
 export function APIInsertPartSetOut(param: any) {
-    return new Promise<StatusProps>(resolve => {
+    return new Promise<PropStatus>(resolve => {
         http.post(`/APSWIPInfo/InsertPartSetOut`, param).then((res) => {
             resolve(res.data);
         })
@@ -552,9 +417,9 @@ export function APIAPSGetHistoryMainPlan(plant: string, ymd: string) {
     })
 }
 
-export function APIApsGetMainSeq() {
+export function APIGetMainPlanOnly(param: any) {
     return new Promise<any>(resolve => {
-        http.post(`/aps/main/seq`).then((res) => {
+        http.post(`/GetMainPlanOnly`, param).then((res) => {
             resolve(res.data);
         })
     })
@@ -574,25 +439,79 @@ export function APIApsRouter(plant: string) {
     })
 }
 
-export function APIGetSublineSeq(param: any) {
+// export function APIGetSublineSeq(param: any) {
+//     return new Promise<any>(resolve => {
+//         http.post(`/GetSublinePlan`, param).then((res) => {
+//             resolve(res.data);
+//         })
+//     })
+// }
+
+export function APIGetRMInfo(param: any) {
     return new Promise<any>(resolve => {
-        http.post(`/aps/subline/seq`, param).then((res) => {
+        http.post(`/GetSublineWIPInfo`, param).then((res) => {
             resolve(res.data);
         })
     })
 }
 
-export function APIGetRMInfo(param:any){
-    return new Promise<any>(resolve => {
-        http.post(`/aps/subline/rm/info`, param).then((res) => {
-            resolve(res.data);
-        })
-    })
-}
-
-export function APIUpdateRMStock(param:any){
+export function APIUpdateRMStock(param: any) {
     return new Promise<any>(resolve => {
         http.post(`/aps/subline/rm/stock/update`, param).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIGetFlowInfo() {
+    return new Promise<any>(resolve => {
+        http.get(`/aps/flow/info`).then((res) => {
+            resolve(res.data);
+        })
+    })
+}
+
+export function APIGetStationInfo(station: string) {
+    return new Promise<any>(resolve => {
+        http.get(`/aps/flow/info/${station}`).then((res) => {
+            resolve(res.data);
+        })
+    });
+}
+
+// export function APIGetDrawingForBackflushSetting(){
+//     return new Promise<any>(resolve => {
+//         http.get(`/GetDrawingForBackflushSetting`).then((res) => {
+//             resolve(res.data);
+//         })
+//     });
+// }
+
+export function APIGetPriorityPlan(param: any) {
+    return new Promise<any>(resolve => {
+        http.post(`/GetPriorityPlan`, param).then((res) => {
+            resolve({
+                data: res.data,
+                status: true
+            });
+        }).catch((err) => {
+            if (axios.isAxiosError(err)) {
+                resolve({
+                    data: err.code,
+                    status: false
+                });
+            } else {
+                resolve({
+                    data: err.message,
+                    status: false
+                });
+            }
+        })
+    })
+}
+export function APISublinePlan(param:any) {
+    return new Promise<any>(resolve => {
+        http.post(`/GetSublinePlan`,param).then((res) => {
             resolve(res.data);
         })
     })

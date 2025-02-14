@@ -1,4 +1,4 @@
-import { Button, Card, Col, Flex, Row, Tabs, Typography } from 'antd';
+import { Button, Card, Col, Flex, Row, Tabs } from 'antd';
 import PropaneTankIcon from '@mui/icons-material/PropaneTank';
 import Gastight from '@/components/aps.gastight';
 import MainPlan from '@/components/aps.main.wip';
@@ -58,12 +58,13 @@ function ApsMain() {
         // let RES
     }
     const handleSelectPlan = async () => {
+        console.log(CodePlan)
         dispatch({ type: 'SET_PLANT', payload: CodePlan });
     }
     return (
         <div>
             {
-                (typeof redux.plant != 'undefined' && redux.plant != '') ? <Tabs defaultActiveKey="1">
+                (typeof redux.filter?.plant != 'undefined' && redux.filter?.plant != '') ? <Tabs defaultActiveKey="1">
                     <TabPane tab={<div className='flex items-center gap-2 pr-3  '><AssistantIcon /><span>Main Sequence</span></div>} key="1">
                         <MainPlan />
                     </TabPane>

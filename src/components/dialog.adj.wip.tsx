@@ -4,10 +4,10 @@ import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { Alert, Button, Input, Modal, notification, Popconfirm, Spin } from 'antd'
 
-import { ParamBackflushAdjWip, PropBackflushAdjWip } from '@/interface/aps.interface'
+import { PropAdjWIP, PropItemAdjWIP } from '@/interface/aps.interface'
 import TextArea from 'antd/es/input/TextArea'
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
-function DialogAdjWip(props: ParamBackflushAdjWip) {
+function DialogAdjWip(props: PropAdjWIP) {
     const [api, contextHolder] = notification.useNotification();
     const openNotify = (type: NotificationType, message: string) => {
         api[type]({
@@ -21,7 +21,7 @@ function DialogAdjWip(props: ParamBackflushAdjWip) {
     const [success, setSuccess] = useState<boolean>(false);
     const [load, setLoad] = useState<boolean>(true);
     const [warning, setWarning] = useState<boolean>(true);
-    const [data, setData] = useState<PropBackflushAdjWip>({ ym: moment().format('YYYYMM'), wcno: prop?.wcno != undefined ? prop.wcno : '', partno: prop?.partno != undefined ? prop.partno : '', cm: prop?.cm != undefined ? prop.cm : '', adj_qty: 0, adj_by: '' });
+    const [data, setData] = useState<PropItemAdjWIP>({ ym: moment().format('YYYYMM'), wcno: prop?.wcno != undefined ? prop.wcno : '', partno: prop?.partno != undefined ? prop.partno : '', cm: prop?.cm != undefined ? prop.cm : '', adj_qty: 0, adj_by: '' });
     useEffect(() => {
         if (open == true) {
             init()

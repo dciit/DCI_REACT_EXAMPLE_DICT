@@ -7,9 +7,8 @@ import TextArea from 'antd/es/input/TextArea';
 import { IoWarningOutline } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 import { IoLogInOutline } from "react-icons/io5";
-import { OTPProps } from 'antd/es/input/OTP';
+import { OTPProps, OTPRef } from 'antd/es/input/OTP';
 import { useDispatch } from 'react-redux';
-
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 export interface ParamDialogEditMainSeq {
     open: boolean;
@@ -47,13 +46,9 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
         PRD_EMP_CODE: empcode
     });
     const [reasons, setReasons] = useState<DictMstr[]>([]);
-    // const [reason, setReason] = useState<string>('');
-    // const [remark, setRemark] = useState<string>('');
-    // const [WrnReason, setWrnReason] = useState<boolean>(false);
-    // const [WrnQty, setWrnQty] = useState<boolean>(false);
     const [load, setLoad] = useState<boolean>(true);
     const [username, setUsername] = useState<string>('');
-    const refInputLogin = useRef<OTPProps>(null);
+    const refInputLogin = useRef<OTPRef>(null);
     const dispatch = useDispatch();
     const init = async () => {
         setLoad(true);
@@ -70,7 +65,6 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
                 PRD_PLAN_QTY: Number(MainSeqSelected?.PRD_PLAN),
                 PRD_PLAN_CODE: typeof MainSeqSelected?.PRD_PLANCODE != 'undefined' ? MainSeqSelected?.PRD_PLANCODE : ''
             })
-            // init();
         }
     }, [open]);
 
@@ -87,7 +81,7 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
         }
     }, [MainSeqEdit.PRD_PLAN_QTY])
     const handleEditMainSeq = async () => {
-        if(MainSeqEdit.PRD_PLAN_QTY == 0 && MainSeqEdit.PRD_REASON_CODE == '') {
+        if (MainSeqEdit.PRD_PLAN_QTY == 0 && MainSeqEdit.PRD_REASON_CODE == '') {
             openNotification('error', `แก้ไขข้อมูลแผนผลิตไม่สำเร็จ เนื่องจาก : ไม่ได้เลือกสาเหตุ`);
             return false;
         }
@@ -103,48 +97,14 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
             } else {
                 openNotification('error', `แก้ไขข้อมูลแผนผลิตไม่สำเร็จ เนื่องจาก : ${res.message}`);
             }
-            setMainSeqEdit({...MainSeqEdit, PRD_REMARK: ''});
+            setMainSeqEdit({ ...MainSeqEdit, PRD_REMARK: '' });
             loadSeq();
             setHandle(false);
         } catch (e: Error | any) {
-            console.log(e)
             openNotification('error', `แก้ไขข้อมูลแผนผลิตไม่สำเร็จ เนื่องจาก : ${e.message}`);
             setHandle(false);
         }
-        // if (plan?.prdPlanQty == 0 && reason == '') {
-        //     setWrnReason(true);
-        //     openNotification('error', 'กรุณาระบุสาเหตุ ...')
-        //     return false;
-        // }
-        // if (remark.length == 0) {
-        //     setWrnQty(true);
-        //     openNotification('error', 'กรุณาระบุหมายเหตุเพิ่มเติม ...')
-        //     return false;
-        // }
-        // if (MainSeqInfo != null) {
-        //     let res: StatusProps = await API_UPDATE_PLAN({
-        //         prdPlanCode: MainSeqInfo.prdPlanCode,
-        //         reasonCode: reason,
-        //         prdPlanQty: plan != null && plan.prdPlanQty != undefined ? Number(plan.prdPlanQty) : 0,
-        //         remark: remark
-        //     });
-        //     if (res.status == true) {
-        //         openNotification('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
-        //         apsLoad();
-        //         setRemark('')
-        //         setTimeout(() => {
-        //             setOpen(false);
-        //         }, 1000);
-        //     } else {
-        //         openNotification('error', 'แก้ไขข้อมูลแผนผลิตไม่สำเร็จ');
-        //     }
-        // }
     }
-    // useEffect(() => {
-    //     if (remark != null && remark.length > 0) {
-    //         setWrnQty(false)
-    //     }
-    // }, [remark])
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             handleLogin();
@@ -164,7 +124,7 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
                         surn: res.surn,
                         fullName: res.fullName
                     }
-                }) 
+                })
             }
         } catch (e: Error | any) {
             openNotification('error', `ไม่สามารถเข้าสู่ระบบได้ เนื่องจาก ${e.message}`);
@@ -173,12 +133,8 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
     const onChange: OTPProps['onChange'] = (text) => {
         setUsername(text);
     };
-    const onInput: OTPProps['onInput'] = (value) => {
-        console.log();
-    };
     const sharedProps: OTPProps = {
-        onChange,
-        onInput
+        onChange
     };
     useEffect(() => {
         if (username.length == 0) {
@@ -246,74 +202,6 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
                                     </Descriptions.Item>
                                 }
                             </Descriptions>
-                            {/* {
-                                `PLAN : ${MainSeqSelected?.APS_PLAN} , PRD : ${MainSeqEdit?.PRD_PLAN_QTY}`
-                            } */}
-                            {/* <div className='flex flex-col gap-3'>
-                            <div className='flex flex-col gap-3'>
-                                <div className={` px-3  pb-6   `}>
-                                    <div className='grid grid-cols-2 gap-3'>
-                                        <div className='flex col-span-2 flex-col gap-1'>
-                                            <div>วันที่</div>
-                                            <Input readOnly={true} value={moment(MainSeq.YMD).format('DD/MM/YYYY')} />
-                                        </div>
-                                        <div className='flex flex-col gap-1'>
-                                            <div>Model</div>
-                                            <Input readOnly={true} value={(MainSeq != undefined && typeof MainSeq.MODEL != 'undefined') ? MainSeq.MODEL : '-'} />
-                                        </div>
-                                        <div className='flex flex-col gap-1'>
-                                            <div>Sebango</div>
-                                            <Input readOnly={true} value={(MainSeq != undefined && typeof MainSeq.SEBANGO != 'undefined') ? MainSeq.SEBANGO : '-'} />
-                                        </div>
-                                        <div className='flex flex-col gap-1 col-span-2'>
-                                            <div>จำนวนที่ต้องการผลิต</div>
-                                            <Input size='large' value={(MainSeq != undefined && typeof MainSeq.APS_PLAN != 'undefined') ? MainSeq.APS_PLAN : 0} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                setMainSeq({ ...MainSeq, prdPlanQty: Number(e.target.value) } as PropMainSeq)
-                                            }} />
-                                        </div>
-                                        <div className='flex flex-col gap-1 col-span-2'>
-                                            <p>สถานะ</p>
-                                            <div className='flex gap-2'>
-                                                <div className={`flex items-center w-fit px-3 pt-[2px] pb-[3px]  shadow-md bg-blue-500 text-white   font-semibold rounded-xl cursor-pointer select-none ${(MainSeq != null && (MainSeq.PRD_PLAN != undefined && (Number(MainSeq.PRD_PLAN) <= 0))) ? '' : 'opacity-35'}`} onClick={() => {
-                                                    setMainSeq(MainSeq != null ? { ...MainSeq, PRD_PLAN: MainSeq.APS_PLAN } : null);
-                                                    setReason('');
-                                                    setWrnReason(false);
-                                                }}>รอผลิต</div>
-                                                <div className={`flex items-center w-fit px-3 pt-[2px] pb-[3px]  bg-red-500  text-white  rounded-xl cursor-pointer select-none ${(MainSeq != null && (MainSeq.PRD_PLAN != undefined && (Number(MainSeq.PRD_PLAN) <= 0))) ? '' : 'opacity-35'}`} onClick={() => {
-                                                    setMainSeq(MainSeq != null ? { ...MainSeq, PRD_PLAN: 0 } : null);
-                                                    setWrnReason(false);
-                                                }}>ไม่ผลิต</div>
-                                            </div>
-                                        </div>
-                                        {
-                                            (MainSeq.APS_PLAN != '' && (Number(MainSeq.APS_PLAN) <= 0)) && <div className='flex flex-col gap-2'>
-                                                <div className='text-[#5f5f5f]'>สาเหตุ</div>
-                                                <div className='flex gap-1'>
-                                                    {
-                                                        reasons.map((oReason: DictMstr, i) => {
-                                                            return <div className={`flex items-center w-fit px-3 pt-[2px] pb-[3px]  ${oReason.code == reason ? 'bg-red-500 text-white' : 'bg-white text-red-500 opacity-60'} border-red-400 border rounded-xl cursor-pointer select-none`} onClick={() => {
-                                                                setReason(oReason.code)
-                                                                setWrnReason(false)
-                                                            }} key={i}> {oReason.description}</div>
-                                                        })
-                                                    }
-                                                </div>
-                                                {
-                                                    WrnReason && <small className='text-red-500'>* กรุณาเลือกสาเหตุ</small>
-                                                }
-                                            </div>
-                                        }
-                                        <div className='col-span-2'>
-                                            <div className='text-[#5f5f5f]'>หมายเหตุ</div>
-                                            <TextArea rows={5} placeholder='คุณสามารถระบุหมายเหตุให้กับแผนการผลิตนี้ได้ ...' onChange={(e) => { setRemark(e.target.value) }} value={remark} />
-                                            {
-                                                WrnQty && <small className='text-red-500'>* กรุณาระบุหมายเหตุเพิ่มเติม เนื่องจาก ยอดผลิตจริงที่ต้องการ ไม่ตรงกับที่ระบบระบุ</small>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> */}
                         </>
                         : <Result
                             status="404"
@@ -326,5 +214,4 @@ function DialogEditMainSeq(props: ParamDialogEditMainSeq) {
         </Modal>
     )
 }
-
 export default DialogEditMainSeq

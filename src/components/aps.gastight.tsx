@@ -6,7 +6,7 @@ import { Badge, Button, Card, Input, Spin, Table, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { ApiGetGastight } from '@/service/aps.service';
-import { Datum, PropsChart } from '@/interface/aps.interface';
+import { Datum, PropChart } from '@/interface/aps.interface';
 import { AiOutlineSearch } from "react-icons/ai";
 Chart.register(ChartDataLabels);
 ChartJS.register(
@@ -20,7 +20,7 @@ ChartJS.register(
 function Gastight() {
     const [ymd, setYmd] = useState<any>(moment().subtract(8, 'hours').format('YYYYMMDD'));
     const [cntGastight, setCntGastight] = useState<number>(0);
-    const [GastightChart, setGastightChart] = useState<PropsChart>();
+    const [GastightChart, setGastightChart] = useState<PropChart>();
     let delayed = false;
     const [load, setLoad] = useState<boolean>(true);
     const [dataSource, setDataSource] = useState<Datum[]>([]);

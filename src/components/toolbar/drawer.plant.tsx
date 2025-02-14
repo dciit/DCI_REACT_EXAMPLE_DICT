@@ -21,21 +21,25 @@ function DrawerPlant(props: any) {
     const { closeDrawer, openDrawer } = props;
     const dispatch = useDispatch();
     const redux = useSelector((state: any) => state.redux);
-    const plant = redux.plant;
+    let ReduxPlant = '';
+    useEffect(() => {
+        ReduxPlant = redux.filter?.plan;
+    }, [])
     const items: MenuItem[] = [
         {
             key: 'sub1',
-            label: 'PLANT',
+            label: 'โรงงาน (Plant)',
             className: 'font-semibold',
             icon: <MdFactory />,
             children: [
                 {
                     key: 'g1',
-                    label: 'Please select plant',
+                    label: 'กรุณาเลือกโรงงาน (Please select plant)',
                     type: 'group',
                     children: [
                         { key: '1', label: 'SCR', className: 'font-semibold', onClick: () => handleSelectPlant('SCR') },
-                        { key: '2', label: 'YC', disabled: false, title: 'Disabled', onClick: () => handleSelectPlant('YC') },
+                        { key: '2', label: '1YC', disabled: true, title: 'Disabled', onClick: () => handleSelectPlant('1YC') },
+                        { key: '3', label: '2YC', disabled: true, title: 'Disabled', onClick: () => handleSelectPlant('2YC') },
                     ],
                 },
             ],
@@ -55,11 +59,25 @@ function DrawerPlant(props: any) {
     ];
 
     const handleSelectPlant = async (plant: string) => {
-        dispatch({ type: 'SET_PLANT', payload: plant })
+        if (ReduxPlant != plant) {
+            try {
+                dispatch({ type: 'SET_FILTER', payload: { ...redux.filter, ...{ plant: plant } } });
+                closeDrawer(false);
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            } catch (e) {
+                dispatch({ type: 'RESET' });
+                alert('SESSION EXPIRED');
+                location.reload();
+            };
+        }
     }
     useEffect(() => {
-        closeDrawer(false)
-    }, [plant])
+        if (typeof ReduxPlant != 'undefined' && ReduxPlant != '') {
+            closeDrawer(false)
+        }
+    }, [ReduxPlant])
 
     return (
         <Drawer

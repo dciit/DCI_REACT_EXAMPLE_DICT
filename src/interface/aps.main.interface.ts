@@ -1,9 +1,3 @@
-export interface PropsApsMainStockBalance {
-    stockBalance: StockBalance[];
-    stockCurrent: PropsWipCurrent[];
-    gastight: Gastight;
-}
-
 export interface Gastight {
     id: number;
     serial: string;

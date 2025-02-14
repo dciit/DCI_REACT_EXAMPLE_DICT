@@ -1,7 +1,7 @@
 {
   "name": "dci_react_example_dict",
   "private": true,
-  "version": "0.4.9",
+  "version": "0.5.8",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,7 +23,7 @@
     "ag-grid-react": "^33.0.2",
     "antd": "^5.20.0",
     "axios": "^1.7.2",
-    "chart.js": "^4.4.3",
+    "chart.js": "^4.4.7",
     "chartjs": "^0.3.24",
     "chartjs-plugin-datalabels": "^2.2.0",
     "class-variance-authority": "^0.7.0",

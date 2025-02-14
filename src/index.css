@@ -231,6 +231,7 @@ table#tbMain tr.inProcess {
 }
 
 table#tbMain .inNext {
+
   td:not(:nth-child(4)),
   td:not(:nth-child(5)) {
     /* opacity: 0.5; */
@@ -314,4 +315,68 @@ table#tbMain tbody {
 
 .beam-line-reverse {
   animation: beamAnimation-reverse 1s linear infinite;
+}
+
+table#tbSublineSeq thead th:not(.td-title) {
+  border-color: #d6d6d6;
+  background: #f6f6f6;
+  font-weight: 500;
+}
+
+table#tbSublineSeq tbody td {
+  border-right: 1px solid #d6d6d6;
+  border-left: 1px solid #d6d6d6;
+}
+
+table#tbSublineSeq tbody tr.row-production td:nth-child(-n+7) {
+  background: #fff6e5;
+}
+
+table#tb-priority-plan {
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #f1f1f1;
+    border: 1px solid #d1d1d1;
+  }
+
+  thead th:nth-child(1) {
+    width: 10%;
+  }
+
+  thead th:nth-child(2) {
+    width: 15%;
+    text-align: center;
+  }
+
+  tbody td {
+    background: #f8f8f8;
+    border: 1px solid #d1d1d1;
+  }
+
+  tbody td:nth-child(3) {
+    padding-left: 4px;
+  }
+
+  tbody td:last-child {
+    text-align: end;
+    padding-right: 4px;
+    font-weight: 500;
+  }
+
+
+}
+
+table#tbSublinePlanDatas {
+  th,
+  td {
+    background: white;
+  }
+  td:first-child{
+    text-align: center;
+  }
+  td.td-number {
+    text-align: end;
+    padding-right: 4px;
+  }
 }

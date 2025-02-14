@@ -1,4 +1,4 @@
-import { PropItemHistoryMainPlan, PropHistoryMainPlan, PropHeaderHistoryMainPlan } from '@/interface/aps.interface';
+import { PropItemHistoryMainPlan, PropHistoryMainPlan } from '@/interface/aps.interface';
 import { APIAPSGetHistoryMainPlan } from '@/service/aps.service';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Input, Modal, Spin } from 'antd'
@@ -10,7 +10,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 function MainHistory() {
     const redux = useSelector((state: any) => state.redux);
-    const plant = typeof redux.plant != 'undefined' ? redux.plant : '';
+    const plant = typeof redux.filter?.plant != 'undefined' ? redux.filter?.plant : '';
     const [ymd, setYmd] = useState<string>(moment().subtract(8, 'hours').format('YYYYMMDD'));
     const [OpenModel, setOpenModel] = useState<boolean>(false);
     const [HistoryDatas, setHistoryDatas] = useState<PropHistoryMainPlan>({ data: [], header: [] });
@@ -18,7 +18,6 @@ function MainHistory() {
     const init = async () => {
         setLoad(true);
         let RES = await APIAPSGetHistoryMainPlan(plant, ymd);
-        console.log(RES)
         setHistoryDatas(RES);
         setLoad(false);
     }
@@ -58,7 +57,7 @@ function MainHistory() {
                             </tr>
                             <tr>
                                 {
-                                    Array.from(new Set([...HistoryDatas.header])).map((h: PropHeaderHistoryMainPlan, iH: number) => {
+                                    Array.from(new Set([...HistoryDatas.header])).map((h: any, iH: number) => {
                                         return <th key={iH} className='border text-center w-8'>{h.PROCESS_TXT}</th>
                                     })
                                 }
@@ -74,7 +73,7 @@ function MainHistory() {
                                         <td className='border text-end pr-1 font-bold text-green-600 bg-green-500/10'>{o.APS_RESULT}</td>
                                         <td className='border text-center bg-[#fafafb] font-semibold text-nowrap'>{o.TIME}</td>
                                         {
-                                            Array.from(new Set([...HistoryDatas.header])).map((h: PropHeaderHistoryMainPlan, iH: number) => {
+                                            Array.from(new Set([...HistoryDatas.header])).map((h: any, iH: number) => {
                                                 var colWarning = '';
                                                 var colVal = 0;
                                                 try {

@@ -4,10 +4,10 @@ import { PropsAdjStock } from '../pages/aps.adj.stock'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
 import SCMLogin from './scm.login'
-import { Alert, Badge, Button, Descriptions, DescriptionsProps, Input, Modal, notification, Radio, Select, Spin } from 'antd'
+import { Button, Descriptions, Input, Modal, notification, Radio, Select, Spin, Typography } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { PropMainWIPSelected } from '@/interface/aps.interface'
-
+const { Paragraph } = Typography;
 interface ParamWipDetail {
     open: boolean;
     setOpen: Function;
@@ -22,75 +22,7 @@ export interface PropsDrawing {
     qty: number;
 }
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
-const items: DescriptionsProps['items'] = [
-    {
-        key: '1',
-        label: 'Product',
-        children: 'Cloud Database',
-    },
-    {
-        key: '2',
-        label: 'Billing Mode',
-        children: 'Prepaid',
-    },
-    {
-        key: '3',
-        label: 'Automatic Renewal',
-        children: 'YES',
-    },
-    {
-        key: '4',
-        label: 'Order time',
-        children: '2018-04-24 18:00:00',
-    },
-    {
-        key: '5',
-        label: 'Usage Time',
-        children: '2019-04-24 18:00:00',
-        span: 2,
-    },
-    {
-        key: '6',
-        label: 'Status',
-        children: <Badge status="processing" text="Running" />,
-        span: 3,
-    },
-    {
-        key: '7',
-        label: 'Negotiated Amount',
-        children: '$80.00',
-    },
-    {
-        key: '8',
-        label: 'Discount',
-        children: '$20.00',
-    },
-    {
-        key: '9',
-        label: 'Official Receipts',
-        children: '$60.00',
-    },
-    {
-        key: '10',
-        label: 'Config Info',
-        children: (
-            <>
-                Data disk type: MongoDB
-                <br />
-                Database version: 3.4
-                <br />
-                Package: dds.mongo.mid
-                <br />
-                Storage space: 10 GB
-                <br />
-                Replication factor: 3
-                <br />
-                Region: East China 1
-                <br />
-            </>
-        ),
-    },
-];
+
 function DialogWipDetail(props: ParamWipDetail) {
     const redux = useSelector((state: any) => state.redux);
     const empcode = (typeof redux.empcode != 'undefined') ? redux.empcode : '';
@@ -101,7 +33,7 @@ function DialogWipDetail(props: ParamWipDetail) {
     const [data, setData] = useState<PropsAdjStock>({ ymd: moment().format('YYYYMMDD'), wcno: '', partno: '', cm: '', adj_qty: 0, adj_by: empcode, remark: '', wipBefore: 0 });
     const [drawings, setDrawings] = useState<PropsDrawing[]>([]);
     const refInpRemark = useRef<HTMLTextAreaElement | null>(null);
-    const [remarkError, setRemarkError] = useState<boolean>(false);
+    // const [remarkError, setRemarkError] = useState<boolean>(false);
     const [api, contextHolder] = notification.useNotification();
     const [saving, setSaving] = useState<boolean>(false);
     const openNotificationWithIcon = (type: NotificationType, message: string) => {
@@ -141,13 +73,16 @@ function DialogWipDetail(props: ParamWipDetail) {
     }, [drawings])
 
     const handleUpdateWip = async () => {
+        if (data?.remark != undefined && data.remark.trim().length == 0) {
+            openNotificationWithIcon('error', 'กรุณาระบุหมายเหตุการแก้ไขตัวเลขคงเหลือ (Remain WIP)')
+            refInpRemark.current?.focus();
+            return false;
+        }
         if (data?.remark == undefined || data.remark.trim() == '' || (data.remark.trim().length == 1 && data.remark.trim() == '-')) {
-            setRemarkError(true);
             setData({ ...data, remark: '' });
             refInpRemark.current?.focus();
             return false;
         }
-        setRemarkError(false);
         if (confirm(`คุณแน่ใจใช่หรือไม่ ว่าต้องการ Adj.Wip = ${data.adj_qty} ?`)) {
             setSaving(true);
             if (isNaN(data.adj_qty) && data.adj_qty == null || data.adj_qty < 0 || data.wcno == '' || data.partno == '') {
@@ -175,14 +110,13 @@ function DialogWipDetail(props: ParamWipDetail) {
         }
     }, [success])
     return (
-        <Modal width={1000} open={open} onClose={() => setOpen(false)} onCancel={() => setOpen(false)} footer={
+        <Modal width={login == false ? 400 : 1000} open={open} onClose={() => setOpen(false)} onCancel={() => setOpen(false)} footer={
             <div className={`${login == false ? 'hidden' : ''} flex items-center gap-1 justify-end`}>
                 <Button type='primary' disabled={(data.adj_qty < 0 || data?.partno == null || load) ? true : false} title={data.adj_qty < 0 ? 'กรุณาระบุยอดคงเหลือมากกว่า 0' : (data?.partno == null ? 'ข้อมูลของ Part ไม่ครบถ้วน' : '')} onClick={data.adj_qty < 0 ? () => undefined : handleUpdateWip} loading={saving} >บันทึก</Button>
                 <Button onClick={() => setOpen(false)}>ปิดหน้าต่าง</Button>
             </div>
         }>
             <div className='w-full'>
-
                 {contextHolder}
                 {
                     login == false ? <SCMLogin /> : <div className=''>
@@ -191,13 +125,16 @@ function DialogWipDetail(props: ParamWipDetail) {
                                 <Descriptions.Item key={'Model'} label="Model">{wip?.WIP_INFO?.MODEL}</Descriptions.Item>
                                 <Descriptions.Item label="Sebango">{wip?.WIP_INFO.SEBANGO}</Descriptions.Item>
                                 <Descriptions.Item label="Drawing">
-                                    <Select className='w-full' onChange={(e) => setData({ ...data, partno: e, adj_qty: drawings.filter(x => x.partno == e)[0].qty, cm: drawings.filter(x => x.partno == e)[0].cm, wcno: drawings.filter(x => x.partno == e)[0].wcno })} value={data.partno}>
-                                        {
-                                            Array.from(new Set([...drawings.map(x => x.partno)])).map((item, index) => {
-                                                return <Select.Option key={index} value={item}>{item}</Select.Option>
-                                            })
-                                        }
-                                    </Select>
+                                    <div className = 'flex gap-2 justify-center items-center'>
+                                        <Select className='w-full' onChange={(e) => setData({ ...data, partno: e, adj_qty: drawings.filter(x => x.partno == e)[0].qty, cm: drawings.filter(x => x.partno == e)[0].cm, wcno: drawings.filter(x => x.partno == e)[0].wcno })} value={data.partno}>
+                                            {
+                                                Array.from(new Set([...drawings.map(x => x.partno)])).map((item, index) => {
+                                                    return <Select.Option key={index} value={item}>{item}</Select.Option>
+                                                })
+                                            }
+                                        </Select>
+                                        <Paragraph copyable={{ text: data.partno }}></Paragraph>
+                                    </div>
                                 </Descriptions.Item>
                                 <Descriptions.Item label="CM">{data.cm}</Descriptions.Item>
                                 <Descriptions.Item label="รหัสพื้นที่" span={2}>

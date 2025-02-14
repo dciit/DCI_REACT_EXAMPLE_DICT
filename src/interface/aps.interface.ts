@@ -1,65 +1,8 @@
-// import { PropsWip } from "@/components/aps.main.plan";
-
 import { PropGastightMainWIP, PropShrinkGage } from "./aps.main.interface";
-
-export interface StatusProps {
+export interface PropStatus {
     status: boolean | number;
     message: string | undefined;
 }
-export interface ViApsPartMasterProps {
-    model: string;
-    partNameCode: string;
-    partCode: string;
-    wcno: string;
-    partno: string;
-    cm: string;
-}
-// export interface ApsMainProps {
-//     sequnce: string;
-//     wcno: string;
-//     model: string;
-//     partno: string;
-//     plan: number;
-//     actual: number;
-// }
-
-// export interface ApsMainProps {
-//     sequence: ApsMainSequenceProps[];
-//     interactive: ApsMainInterActiveProps[];
-// }
-// export interface ApsMainInterActiveProps {
-//     hour: number;
-//     modelCode: string;
-//     modelName: string;
-//     cnt: number;
-// }
-// export interface ApsMainSequenceProps {
-//     p_wcno: string;
-//     p_group: string;
-//     p_model: string;
-//     p_startdate: string;
-//     p_starttime: string;
-//     p_enddate: string;
-//     p_endtime: string;
-//     p_modelcode: string;
-//     p_palnqty: number;
-//     _P_packing: any[];
-//     p_StartDateT: Date;
-//     plqty: number;
-//     row: number;
-//     p_comment: string;
-//     p_packing: string;
-//     p_palletqty: number;
-//     plancode: string;
-//     seq: string;
-//     p_mc: string;
-//     p_rev: string;
-//     p_plancode: string;
-//     p_planqty: number;
-//     subline: string;
-//     packingList: PackingList[];
-// }
-
 export interface PackingList {
     p_MODEL: string;
     p_PACKING: string;
@@ -95,9 +38,6 @@ export interface GasTightProps {
     modelName: string;
     cnt: number;
 }
-
-
-
 export interface DictMstr {
     dictId: number;
     dictSystem: string;
@@ -126,108 +66,6 @@ export interface APSUpdatePlanProps {
     prdPlanQty: number;
     remark: string;
 }
-export interface APSInsertPlanProps {
-    modelCode: string;
-    prdQty: number;
-    prdPlanCode: string;
-}
-export interface WipProps {
-    hour: number;
-    sebango: string;
-    model: string;
-    cnt: number;
-    wip: partWipProps[];
-    // stator: Tor;
-    // rotor: Tor;
-    // housing: CrankShaft;
-    // crankShaft: CrankShaft;
-    // fsOs: CrankShaft;
-    // lower: CrankShaft;
-    // pipe: Bottom;
-    // top: Bottom;
-    // bottom: Bottom;
-}
-export interface partWipProps {
-    wcno: string;
-    model: string;
-    partno: string;
-    parttype: string;
-    stock: number;
-}
-export interface Mdw27Props {
-    modelName: string;
-    modelCode: string;
-    wcno?: string;
-}
-export interface StatusProps {
-    status: boolean | number;
-    message: string | undefined;
-}
-export interface ViApsPartMasterProps {
-    model: string;
-    partNameCode: string;
-    partCode: string;
-    wcno: string;
-    partno: string;
-    cm: string;
-}
-// export interface ApsMainProps {
-//     sequnce: string;
-//     wcno: string;
-//     model: string;
-//     partno: string;
-//     plan: number;
-//     actual: number;
-// }
-
-export interface ApsMainProps {
-    sequence: ApsMainSequenceProps[];
-    interactive: ApsMainInterActiveProps[];
-}
-export interface ApsMainInterActiveProps {
-    hour: number;
-    modelCode: string;
-    modelName: string;
-    cnt: number;
-}
-export interface ApsMainSequenceProps {
-    p_wcno: string;
-    p_group: string;
-    p_model: string;
-    p_startdate: string;
-    p_starttime: string;
-    p_enddate: string;
-    p_endtime: string;
-    p_modelcode: string;
-    p_palnqty: number;
-    _P_packing: any[];
-    p_StartDateT: Date;
-    plqty: number;
-    row: number;
-    p_comment: string;
-    p_packing: string;
-    p_palletqty: number;
-    plancode: string;
-    seq: string;
-    p_mc: string;
-    p_rev: string;
-    p_plancode: string;
-    p_planqty: number;
-    subline: string;
-    packingList: PackingList[];
-}
-
-export interface PackingList {
-    p_MODEL: string;
-    p_PACKING: string;
-    p_QTYSTD: number;
-    p_PALLETQTY: number;
-    p_REPORT_QTY: number;
-    p_QTYPLAN: number;
-    p_comment: string;
-    subline: string;
-}
-
 export interface ApsProductionPlanProps {
     apsPlanCode: any;
     prdPlanCode?: string;
@@ -246,14 +84,6 @@ export interface ApsProductionPlanProps {
     creBy?: string;
     creDt?: Date;
 }
-export interface GasTightProps {
-    hour: number;
-    modelCode: string;
-    modelName: string;
-    cnt: number;
-}
-
-
 
 export interface DictMstr {
     dictId: number;
@@ -345,14 +175,13 @@ export interface EkbWipPartStockTransactionProps {
     refNo: string;
     modelcode: string;
 }
-export interface ApsResult {
+export interface PropBackflush {
     wc: string;
     ym: string;
     ymd: string;
 }
 
-
-export interface APSUpdateResultParam {
+export interface ParamUpdateBackflush {
     ym: string;
     ymd: string;
     wcno: string;
@@ -686,17 +515,17 @@ export interface ParamGetDrawingAdjust {
 
 export interface PropsGastight {
     data: Datum[];
-    chart: PropsChart;
+    chart: PropChart;
 }
-export interface PropGastight {
-    id: number;
-    serial: string;
-    modelCode: string;
-    insertBy: string;
-    insertDate: string;
-}
+// export interface PropGastight {
+//     id: number;
+//     serial: string;
+//     modelCode: string;
+//     insertBy: string;
+//     insertDate: string;
+// }
 
-export interface PropsChart {
+export interface PropChart {
     labels: string[];
     data: string[];
 }
@@ -764,9 +593,6 @@ export interface PropsWip {
     rotorSubline: number | null;
     createDate: Date | null;
 }
-
-
-
 export interface PropCasingInfo {
     item: PropSubline[];
     header: PropCasingHeader[];
@@ -819,17 +645,17 @@ export interface ParamUpdateStatusPartSetIN {
     empcode: string;
 
 }
-export interface PropGroupRM {
-    groupCode: string;
-    groupDesc: string;
-}
-export interface ParamBackflushAdjWip {
+// export interface PropGroupRM {
+//     groupCode: string;
+//     groupDesc: string;
+// }
+export interface PropAdjWIP {
     open: boolean;
     setOpen: Function;
-    prop: PropBackflushAdjWip | null;
+    prop: PropItemAdjWIP | null;
     loadBackflush: Function;
 }
-export interface PropBackflushAdjWip {
+export interface PropItemAdjWIP {
     ym: string;
     wcno: string;
     partno: string;
@@ -939,9 +765,6 @@ export interface PropMainWIPSelected {
     PROCESS_CODE: string;
 }
 
-
-
-
 export interface PropHistoryMainPlan {
     data: PropItemHistoryMainPlan[];
     header: PropRouter[];
@@ -1030,4 +853,24 @@ export interface PropDataApsPlnInfo {
     PART_NO: string;
     CM: string;
     PRD_PLAN_QTY: number;
+}
+export interface PropFlows {
+    shrinkage: PropItemFlow[];
+    axiscore: PropItemFlow[];
+    gastight: PropItemFlow[];
+    largeP: PropItemFlow[];
+}
+
+export interface PropItemFlow {
+    MODEL: string;
+    ACTUAL: string;
+    STATUS: string;
+}
+export interface PropIsError {
+    status: boolean;
+    message: string;
+}
+export interface PropAxios {
+    status: boolean;
+    data: any;
 }

@@ -1,7 +1,8 @@
+//@ts-nocheck
 import { useEffect, useState } from 'react'
 import moment from 'moment';
 import { DictMstr, PropsMain, PropsPlanMachine } from '../interface/aps.interface';
-import { ApiMachineChangeSeq, ApiGetMainPlan } from '../service/aps.service';
+import { ApiMachineChangeSeq, APIGetMainPlan } from '../service/aps.service';
 import { ToastContainer, toast } from 'react-toastify';
 import DialogMachineConfChangeSeq from '../components/machine/machine.conf.change.seq';
 import { Radio} from 'antd';
@@ -30,13 +31,10 @@ function ApsSubLine() {
     const [tabSelected, setTabSelected] = useState<string>('');
     const [processSelected, setProcessSelected] = useState<string>('');
     const init = async () => {
-        setLoad(true);
-        const res = await ApiGetMainPlan({
+        const res = await APIGetMainPlan({
             paramDate: ymd.format('YYYYMMDD'),
             paramWCNO: '904'
         });
-        // setMainSeq(res.main_seq);
-        // setTabs(res.masterSubline);
         setLoad(false);
     }
     useEffect(() => {
@@ -144,11 +142,6 @@ function ApsSubLine() {
                             </div>
                             <small className='text-teal-700'>แผนการผลิตประจำซับไลน์และจำนวนคงเหลือของวัตถุดิบ</small>
                         </div>
-                        <Radio.Group value={tabSelected} onChange={(e) => setTabSelected(e.target.value)}>
-                            {
-                                // Array.from(new Set(tabs.map(x => x.line))).map(o => <Radio.Button value={o}>{o}</Radio.Button>)
-                            }
-                        </Radio.Group>
                         {
                             tabSelected != null && <SublineWIPs subline={processSelected} setSubline={setProcessSelected} processs={tabs.filter(x => x.line == tabSelected).map(o => o.process)} line={tabSelected} oMainSeq={oMainSeq} />
                         }
@@ -156,10 +149,7 @@ function ApsSubLine() {
                 </div>
             </div>
             <ToastContainer autoClose={1500} />
-            {/* <DialogEditMainSeq open={openDialogEditMainPlan}  setOpen={setDialogEditMainPlan} MainSeqSelected={planSelected} /> */}
             <DialogMachineConfChangeSeq open={openDialogMachineChangeSeq} setOpen={setOpenDialogMachineChangeSeq} handleChangeSeq={handleMachineChangeSeq} />
-            {/* <DialogEditPlanMachine open={openDialogEditMachinePlan} setOpen={setOpenDialogEditMachinePlan} MachinePlan={MachinePlan} apsLoad={init} /> */}
-            {/* </Spin> */}
         </>
     )
 }

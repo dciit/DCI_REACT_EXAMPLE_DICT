@@ -1,4 +1,4 @@
-import { Button, Result, Tabs  } from 'antd';
+import { Button, Result, Tabs } from 'antd';
 import SettingModel from '@/components/child.setting/setting.drawing';
 import SettingPrivilege from '@/components/child.setting/setting.privilege';
 import SettingDrawingSubline from './aps.setting.drawing.subline';
@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DialogLogin from '@/components/dialog.login';
 import APSMaster from './aps.master';
+// import APSSublineBackflushSetting from './aps.backflush.setting';
 export interface PropsAdjStock {
     ymd: string;
     wcno: string;
@@ -31,6 +32,7 @@ function AdjStock() {
         { label: 'จัดการโมเดล', key: '2', children: <SettingModel /> },
         { label: 'Subline Management', key: '3', children: <SettingDrawingSubline /> },
         { label: 'Master', key: '4', children: <APSMaster /> },
+        // { label: 'สูตรรายงานยอด', key: '5', children:  <APSSublineBackflushSetting/> }
     ]
     useEffect(() => {
         if (redux?.login == undefined || redux?.login == false) {

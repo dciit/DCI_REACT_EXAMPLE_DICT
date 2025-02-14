@@ -1,4 +1,4 @@
-function ListPlanStatus() {
+function PlanStatusComponent() {
     return (
         <div className='flex items-center gap-3'>
             <div className='flex items-center gap-1'>
@@ -17,4 +17,4 @@ function ListPlanStatus() {
     )
 }
 
-export default ListPlanStatus
+export default PlanStatusComponent

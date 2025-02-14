@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { useEffect, useState } from 'react'
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Avatar } from '@mui/material';
@@ -6,8 +5,8 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { base, ver } from '../constants';
-import { Divider, Dropdown, MenuProps, Space } from 'antd';
-import { DownOutlined, LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { Divider, Dropdown, MenuProps } from 'antd';
+import { LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import DialogLogin from './dialog.login';
 import DropdownPlant from './toolbar/dropdown.plant';
 import DrawerPlant from './toolbar/drawer.plant';
@@ -18,15 +17,13 @@ interface moduleProps {
     value: string;
     disabled: boolean;
 }
-
-
 function ToolbarComponent() {
     let comp = window.location.pathname.split("/").pop();
     comp = comp == '' ? 'main' : comp;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const redux = useSelector((state: any) => state.redux);
-    const plant = redux.plant;
+    const plant = redux.filter?.plant;
     const login = redux.login;
     const img = redux.img;
     const shortName = redux.fullName;
@@ -50,7 +47,7 @@ function ToolbarComponent() {
     ];
 
 
-    const [items] = useState<MenuProps['items']>([
+    const [items, setItems] = useState<MenuProps['items']>([
         {
             key: '1',
             icon: <LoginOutlined />,
@@ -78,8 +75,6 @@ function ToolbarComponent() {
             onClick: () => openLogout()
         }
     ])
-
-
     const openLogout = async () => {
         if (confirm('คุณต้องการออกจากระบบใช่หรือไม่ ?')) {
             dispatch({ type: 'LOGOUT' });
@@ -89,8 +84,44 @@ function ToolbarComponent() {
         }
     }
     useEffect(() => {
-
-    }, [])
+        setItems([
+            {
+                key: '1',
+                icon: <LoginOutlined />,
+                label: (
+                    <span > เข้าสู่ระบบ</span>
+                ),
+                disabled: login,
+                onClick: () => setOpenLogin(true)
+            },
+            {
+                key: '2',
+                icon: <SettingOutlined />,
+                label: (
+                    <span> ตั้งค่า</span>
+                ),
+                onClick: () => window.open(`./adjstock`)
+            },
+            {
+                key: '3',
+                label: (
+                    <span>ออกจากระบบ</span>
+                ),
+                icon: <LogoutOutlined />,
+                disabled: !login,
+                onClick: () => openLogout()
+            }
+        ])
+    }, [login])
+    const handleClickMenuAppbar = (line: string) => {
+        try {
+            dispatch({ type: 'SET_FILTER', payload: { ...redux.filter, ...{ plant: redux.filter?.plant, line: line } } });
+            navigate(`./${base}/${line}`);
+        } catch (e: Error | any) {
+            dispatch({ type: 'RESET' });
+            alert('SESSION EXPIRED')
+        }
+    }
     return (
         <div id='toolbar' className='flex flex-row sticky top-0 flex-none h-[60px] border-gray-200   border-b  select-none px-[2.75%] sm:px-[2.75%] md:px-[2.75%] xl:px-[2.75%]  lg:border-b backdrop-blur-sm bg-white/60'>
             <div className={`flex-none flex justify-center items-center h-full  gap-2 z-[99999] cursor-pointer`} onClick={() => setOpenDrawer(true)}>
@@ -106,7 +137,7 @@ function ToolbarComponent() {
             </div>
             <div className={`grow text-center  flex sm:gap-3 xl:gap-6 items-center justify-end pr-6`} id='module-list'>
                 {
-                    moduleList.map((item: moduleProps, i: number) => <div key={i} className={`flex items-center justify-center uppercase sm:text-sm xl:text-md  ${comp != item.value ? (item.disabled == true ? `text-[#585858]/20` : `text-[#585858] `) : (item.disabled == true ? '' : `text-blue-600 drop-shadow-sm hover:text-blue-600`)}  cursor-pointer transition-all duration-300 gap-2 flex font-semibold`} onClick={() => item.disabled == true ? null : navigate(`./${base}/${item.value}`)}>
+                    moduleList.map((item: moduleProps, i: number) => <div key={i} className={`flex items-center justify-center uppercase sm:text-sm xl:text-md  ${comp != item.value ? (item.disabled == true ? `text-[#585858]/20` : `text-[#585858] `) : (item.disabled == true ? '' : `text-blue-600 drop-shadow-sm hover:text-blue-600`)}  cursor-pointer transition-all duration-300 gap-2 flex font-semibold`} onClick={() => item.disabled == true ? null : handleClickMenuAppbar(item.value)}>
                         <div className='flex items-center gap-2'>
                             {
                                 comp == item.value && <span className="relative flex h-3 w-3">
@@ -142,7 +173,6 @@ function ToolbarComponent() {
             <DialogLogin open={openLogin} setOpen={setOpenLogin} />
             <DrawerPlant openDrawer={openDrawer} closeDrawer={setOpenDrawer} />
         </div>
-
     )
 }
 

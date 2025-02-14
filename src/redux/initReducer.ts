@@ -13,6 +13,8 @@ export interface MRedux {
     page?: string;
     rev?: string;
     plant: string;
+    line: string;
+    filter: any;
 }
 const initialState: MRedux = {
     login: false,
@@ -22,11 +24,15 @@ const initialState: MRedux = {
     name: '',
     surn: '',
     rev: '',
-    plant: ''
+    plant: '',
+    line: '',
+    filter: { plant: '', line: '' },
 }
 
 const IndexReducer = (state = initialState, action: any) => {
     switch (action.type) {
+        case 'RESET':
+            return { ...initialState };
         case 'LOGIN':
             return {
                 ...state,
@@ -71,7 +77,12 @@ const IndexReducer = (state = initialState, action: any) => {
         case 'SET_PLANT':
             return {
                 ...state,
-                plant: action.payload
+                filter: { ...state.filter, plant: action.payload, line: state.filter.line == '' ? 'MAIN' : 'SUBLINE' }
+            }
+        case 'SET_FILTER':
+            return {
+                ...state,
+                filter: action.payload
             }
         default:
             return state

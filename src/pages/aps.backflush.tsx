@@ -1,8 +1,7 @@
-//@ts-nocheck
 import { ChangeEvent, Fragment, useEffect, useState } from 'react'
-import { API_APS_RESULT, API_APS_UPDATE_RESULT, ApiBackflushPrivilege } from '../service/aps.service';
+import { API_APS_RESULT, APIUpdateBackflush, ApiBackflushPrivilege } from '../service/aps.service';
 import moment from 'moment';
-import { APSResultPartProps, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps, PropBackflushAdjWip } from '../interface/aps.interface';
+import { APSResultPartProps, EkbWipPartStock, EkbWipPartStockTransactionProps, PartGroupMasterProps, PropItemAdjWIP } from '../interface/aps.interface';
 import { lines } from '../constants';
 import { useSelector } from 'react-redux';
 import DialogLogin from '../components/dialog.login';
@@ -15,27 +14,24 @@ import { AiOutlineSetting } from "react-icons/ai";
 import ModalWIPInfo from '@/components/modal.wip.info';
 
 function ApsBackflush() {
-    // const dispatch = useDispatch();
     const redux = useSelector((state: any) => state.redux);
     let login: boolean = redux.login;
     let empcode: string = redux.empcode;
-    // let lineSelected: string = typeof redux.backflush == 'undefined' ? lines[0] : redux.backflush?.line;
     const [openLogin, setOpenLogin] = useState<boolean>(false);
-    const dtNow: any = moment().add('hours', -8);
+    const dtNow: any = moment().subtract(8, 'hours');
     const [parts, setParts] = useState<APSResultPartProps[]>([]);
     const [stock, setStock] = useState<EkbWipPartStockTransactionProps[]>([]);
     const [inpValue, setInpValue] = useState<number>(0);
     const [partGroupMaster, setPartGroupMaster] = useState<PartGroupMasterProps[]>([]);
     const [stockMain, setStockMain] = useState<EkbWipPartStock[]>([]);
-    const [isHiddenStd, setIsHiddenStd] = useState<boolean>(true);
+    const [isHiddenStd] = useState<boolean>(true);
     const [privileges, setPrivileges] = useState<string[]>([])
     let timeStart: number = 10;
     const [ymd, setYmd] = useState<string>(moment().subtract(8, 'hours').format('YYYYMMDD'));
     const [line, setLine] = useState<string>(lines[0].value);
-    // let line: string = (reduxBackflush.line == undefined || reduxBackflush.line == 'undefined') ? lines[0].value : reduxBackflush.line;
     const [load, setLoad] = useState<boolean>(true);
     const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
-    const [editWip, setEditWip] = useState<PropBackflushAdjWip | null>(null);
+    const [editWip, setEditWip] = useState<PropItemAdjWIP | null>(null);
     const [openEditWip, setOpenEditWip] = useState<boolean>(false);
     const [WIPInfo, setWIPInfo] = useState<any>();
     const [openWIPInfo, setOpenWIPInfo] = useState<boolean>(false);
@@ -49,7 +45,7 @@ function ApsBackflush() {
             if (hmsCurrent == '08:00:00' || hmsCurrent == '08:00:01' || hmsCurrent == '20:00:00' || hmsCurrent == '20:00:01') {
                 location.reload();
             }
-        }, 1000); // Logs time every second
+        }, 1000);
         return () => {
             clearInterval(intervalId)
         }
@@ -82,7 +78,7 @@ function ApsBackflush() {
         }
     }
     const handleUpdateResult = async (shift: string, period: string, wcno: string, partno: string, cm: string) => {
-        await API_APS_UPDATE_RESULT({
+        await APIUpdateBackflush({
             ym: moment(ymd).format('YYYYMM'),
             ymd: ymd,
             shift: shift,
@@ -124,7 +120,7 @@ function ApsBackflush() {
             }
         }
     }, [editWip]);
-    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    const onChange: DatePickerProps['onChange'] = (_, dateString) => {
         setYmd(moment(dateString, 'YYYY-MM-DD').format('YYYYMMDD'));
     };
     return (
@@ -135,7 +131,7 @@ function ApsBackflush() {
                         <span>วันที่ : </span>
                         <DatePicker onChange={onChange} allowClear={false} defaultValue={dayjs(ymd)} value={dayjs(ymd)} />
                     </div>
-                    <Button className='pl-3' type='primary' icon={<AiFillThunderbolt />} onClick={(e) => setYmd(moment().format('YYYYMMDD'))}>วันนี้</Button>
+                    <Button className='pl-3' type='primary' icon={<AiFillThunderbolt />} onClick={() => setYmd(moment().format('YYYYMMDD'))}>วันนี้</Button>
                 </div>
                 <small className='text-red-600'>* ระบบสามารถลงยอดผลิตได้ภายในวันปัจจุบัน หากต้องการลงยอดผลิตวันอื่นๆ ติดต่อ 208 (SCM)</small>
             </div>
@@ -227,7 +223,7 @@ function ApsBackflush() {
                                                         <td className='border pl-2 bg-blue-200 pr-2'>
                                                             <div className='flex items-center justify-between  align-top break-words py-2 h-full'>
                                                                 <div className='flex flex-col leading-none gap-1 z-[100]'>
-                                                                    <span className='font-semibold'>{oScheme.partno} {oScheme.cm}
+                                                                    <span className='font-semibold'>{oScheme.partno} <span className='text-red-500'>{oScheme.cm}</span>
                                                                         <small className='ml-1'>({oScheme.wcno})</small>
                                                                     </span>
                                                                     <strong className='text-[12px] text-black'>{oScheme.model_common}</strong>

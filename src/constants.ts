@@ -1,10 +1,9 @@
     import { LineProps } from "./interface/aps.interface";
     const base = 'aps';
-    const ver = 6.9;
+    const ver = 8.6;
     const hrapi = 'https://scm.dci.co.th/hrapi';
     const manpowerapi = 'http://dciweb.dci.daikin.co.jp/apsapi';
     const checkinapi = 'http://dciweb.dci.daikin.co.jp/dcimanpowerapi'
-
     const projectName = 'DCI Dashboard';
     const imagepath = 'http://dcidmc.dci.daikin.co.jp/PICTURE/';
     const dateFormat = 'DD/MM/YYYY'
@@ -16,7 +15,7 @@
     ]
     const empcode = '41256';
     const apiSoapLogin = 'http://websrv01.dci.daikin.co.jp/BudgetCharts/BudgetRestService/api/authen?';
-    const intervalTime = 15000;
+    const intervalTime = 20000;
     const apsapi = 'https://localhost:7094'
     // const apsapi = 'http://dciweb.dci.daikin.co.jp/apsapi'
     const bgCard = 'bg-[#1e1f23]';
